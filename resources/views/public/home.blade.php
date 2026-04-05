@@ -60,7 +60,7 @@
                         <img src="{{ asset('logo.png') }}" alt="Logo Kemenkumham" class="w-full h-full object-contain">
                     </div>
                 </div>
-                <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-1">Lapas Kelas IIB Sumbawa</h2>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-1">Lapas Kelas IIA Sumbawa</h2>
                 <p class="text-sm text-gray-600">Kementerian Hukum dan Hak Asasi Manusia</p>
                 <p class="text-xs text-gray-500 mt-1">Republik Indonesia</p>
             </div>
@@ -138,7 +138,7 @@
                         <img src="{{ asset('logo.png') }}" alt="Logo" class="w-full h-full object-contain">
                     </div>
                 </div>
-                <p class="text-sm sm:text-base font-semibold text-[#c9a227]">&copy; {{ date('Y') }} Lapas Kelas IIB Sumbawa</p>
+                <p class="text-sm sm:text-base font-semibold text-[#c9a227]">&copy; {{ date('Y') }} Lapas Kelas IIA Sumbawa</p>
                 <p class="text-xs sm:text-sm text-white/80 mt-1">Kementerian Hukum dan Hak Asasi Manusia Republik Indonesia</p>
             </div>
         </div>

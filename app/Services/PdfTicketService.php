@@ -17,7 +17,7 @@ class PdfTicketService
             'session' => $queue->session,
             'followers' => $queue->followers,
             'logo_path' => public_path('images/logo-lapas.png'),
-            'institution_name' => 'Lembaga Pemasyarakatan Kelas IIB Sumbawa',
+            'institution_name' => 'Lembaga Pemasyarakatan Kelas IIA Sumbawa',
             'institution_address' => 'Jl. Lintas Sumbawa No. 123, Sumbawa Besar',
             'generated_at' => now()->format('d F Y H:i:s'),
         ];
@@ -63,7 +63,7 @@ class PdfTicketService
             'session' => $queue->session,
             'followers' => $queue->followers,
             'logo_path' => public_path('images/logo-lapas.png'),
-            'institution_name' => 'Lembaga Pemasyarakatan Kelas IIB Sumbawa',
+            'institution_name' => 'Lembaga Pemasyarakatan Kelas IIA Sumbawa',
             'institution_address' => 'Jl. Lintas Sumbawa No. 123, Sumbawa Besar',
             'generated_at' => now()->format('d F Y H:i:s'),
         ];
@@ -85,7 +85,7 @@ class PdfTicketService
             'session' => $queue->session,
             'followers' => $queue->followers,
             'logo_path' => public_path('images/logo-lapas.png'),
-            'institution_name' => 'Lembaga Pemasyarakatan Kelas IIB Sumbawa',
+            'institution_name' => 'Lembaga Pemasyarakatan Kelas IIA Sumbawa',
             'institution_address' => 'Jl. Lintas Sumbawa No. 123, Sumbawa Besar',
             'generated_at' => now()->format('d F Y H:i:s'),
         ];

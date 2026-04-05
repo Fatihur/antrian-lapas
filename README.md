@@ -1,6 +1,6 @@
 # E-Antrian Kunjungan Lapas Sumbawa
 
-Aplikasi antrian kunjungan online untuk Lembaga Pemasyarakatan (Lapas) Kelas IIB Sumbawa. Dibangun dengan Laravel 11, Livewire 3, dan MySQL.
+Aplikasi antrian kunjungan online untuk Lembaga Pemasyarakatan (Lapas) Kelas IIA Sumbawa. Dibangun dengan Laravel 11, Livewire 3, dan MySQL.
 
 ## Fitur Utama
 
@@ -167,5 +167,5 @@ MIT License
 
 ## Kontak
 
-Lembaga Pemasyarakatan Kelas IIB Sumbawa  
+Lembaga Pemasyarakatan Kelas IIA Sumbawa  
 Jl. Lintas Sumbawa No. 123, Sumbawa Besar

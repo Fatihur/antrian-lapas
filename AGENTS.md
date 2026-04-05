@@ -2,7 +2,7 @@
 
 ## Project Snapshot
 
-Aplikasi antrian kunjungan online untuk Lapas Kelas IIB Sumbawa. Dibangun dengan Laravel 11 + Livewire 3 + Tailwind CSS. Monolithic PHP application dengan arsitektur Livewire untuk interaktivitas real-time.
+Aplikasi antrian kunjungan online untuk Lapas Kelas IIA Sumbawa. Dibangun dengan Laravel 11 + Livewire 3 + Tailwind CSS. Monolithic PHP application dengan arsitektur Livewire untuk interaktivitas real-time.
 
 ## Setup Commands
 
