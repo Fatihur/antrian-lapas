@@ -10,11 +10,11 @@ class PdfTicketService
 {
     public function generate(VisitQueue $queue): string
     {
-        $queue->load(['schedule', 'followers', 'verifiedBy']);
+        $queue->load(['session', 'followers', 'verifiedBy']);
 
         $data = [
             'queue' => $queue,
-            'schedule' => $queue->schedule,
+            'session' => $queue->session,
             'followers' => $queue->followers,
             'logo_path' => public_path('images/logo-lapas.png'),
             'institution_name' => 'Lembaga Pemasyarakatan Kelas IIB Sumbawa',
@@ -56,11 +56,11 @@ class PdfTicketService
 
     public function download(VisitQueue $queue)
     {
-        $queue->load(['schedule', 'followers']);
+        $queue->load(['session', 'followers']);
 
         $data = [
             'queue' => $queue,
-            'schedule' => $queue->schedule,
+            'session' => $queue->session,
             'followers' => $queue->followers,
             'logo_path' => public_path('images/logo-lapas.png'),
             'institution_name' => 'Lembaga Pemasyarakatan Kelas IIB Sumbawa',
@@ -78,11 +78,11 @@ class PdfTicketService
 
     public function stream(VisitQueue $queue)
     {
-        $queue->load(['schedule', 'followers']);
+        $queue->load(['session', 'followers']);
 
         $data = [
             'queue' => $queue,
-            'schedule' => $queue->schedule,
+            'session' => $queue->session,
             'followers' => $queue->followers,
             'logo_path' => public_path('images/logo-lapas.png'),
             'institution_name' => 'Lembaga Pemasyarakatan Kelas IIB Sumbawa',

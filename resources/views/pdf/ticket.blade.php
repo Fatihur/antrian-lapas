@@ -229,11 +229,11 @@
                 </div>
                 <div class="info-row">
                     <div class="info-label">Tanggal Kunjungan:</div>
-                    <div class="info-value">{{ $schedule->tanggal->format('d F Y') }}</div>
+                    <div class="info-value">{{ \Carbon\Carbon::parse($queue->tanggal_kunjungan)->format('d F Y') }}</div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">Sesi:</div>
-                    <div class="info-value">{{ $schedule->sesi }}</div>
+                    <div class="info-value">{{ $session->nama_sesi }} ({{ $session->jam_buka->format('H:i') }} - {{ $session->jam_tutup->format('H:i') }})</div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">Status:</div>
