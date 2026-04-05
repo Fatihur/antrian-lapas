@@ -1,0 +1,29 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - img [ref=e7]
+    - heading "Login Admin" [level=2] [ref=e9]
+    - paragraph [ref=e10]: E-Antrian Kunjungan Lapas Sumbawa
+  - generic [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: Username
+        - generic [ref=e15]:
+          - generic:
+            - img
+          - textbox "Username" [ref=e16]:
+            - /placeholder: Masukkan username
+      - generic [ref=e17]:
+        - generic [ref=e18]: Password
+        - generic [ref=e19]:
+          - generic:
+            - img
+          - textbox "Password" [ref=e20]:
+            - /placeholder: Masukkan password
+    - generic [ref=e22]:
+      - checkbox "Ingat saya" [ref=e23]
+      - generic [ref=e24]: Ingat saya
+    - button "Login" [ref=e26] [cursor=pointer]:
+      - img [ref=e28]
+      - text: Login
+  - link "← Kembali ke Beranda" [ref=e31] [cursor=pointer]:
+    - /url: http://localhost:8000

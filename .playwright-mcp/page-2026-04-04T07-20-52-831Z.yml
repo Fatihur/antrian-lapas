@@ -1,0 +1,144 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e9]:
+        - heading "E-Antrian" [level=1] [ref=e10]
+        - paragraph [ref=e11]: Lapas Sumbawa
+    - navigation [ref=e12]:
+      - link "Dashboard" [ref=e13] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/dashboard
+        - img [ref=e14]
+        - generic [ref=e19]: Dashboard
+      - link "Data Antrian" [ref=e20] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/antrian
+        - img [ref=e21]
+        - generic [ref=e23]: Data Antrian
+      - link "Panggil Antrian" [ref=e24] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/panggil
+        - img [ref=e25]
+        - generic [ref=e27]: Panggil Antrian
+      - paragraph [ref=e29]: Pengaturan
+      - link "Jadwal & Kuota" [ref=e30] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/jadwal
+        - img [ref=e31]
+        - generic [ref=e33]: Jadwal & Kuota
+      - link "Laporan" [ref=e34] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/laporan
+        - img [ref=e35]
+        - generic [ref=e38]: Laporan
+      - link "Manajemen Admin" [ref=e39] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/pengguna
+        - img [ref=e40]
+        - generic [ref=e43]: Manajemen Admin
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - generic [ref=e46]: S
+        - generic [ref=e47]:
+          - paragraph [ref=e48]: Super Admin
+          - paragraph [ref=e49]: Super Admin
+      - button "Logout" [ref=e51] [cursor=pointer]:
+        - img [ref=e52]
+        - generic [ref=e54]: Logout
+  - generic [ref=e55]:
+    - banner [ref=e56]:
+      - generic [ref=e57]:
+        - heading "Dashboard" [level=2] [ref=e59]
+        - link "Lihat Website" [ref=e61] [cursor=pointer]:
+          - /url: http://localhost:8000
+          - img [ref=e62]
+          - text: Lihat Website
+    - main [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - generic [ref=e68]:
+              - img [ref=e70]
+              - paragraph [ref=e72]: Total Antrian Hari Ini
+            - paragraph [ref=e73]: "7"
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - img [ref=e77]
+              - paragraph [ref=e79]: Menunggu Verifikasi
+            - paragraph [ref=e80]: "3"
+          - generic [ref=e81]:
+            - generic [ref=e82]:
+              - img [ref=e84]
+              - paragraph [ref=e86]: Disetujui
+            - paragraph [ref=e87]: "1"
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - img [ref=e91]
+              - paragraph [ref=e93]: Dipanggil
+            - paragraph [ref=e94]: "0"
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]:
+              - img [ref=e98]
+              - heading "Antrian Terbaru Hari Ini" [level=4] [ref=e100]
+            - link "Lihat Semua →" [ref=e101] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/antrian
+          - table [ref=e103]:
+            - rowgroup [ref=e104]:
+              - row "No. Antrian Nama Pengunjung Sesi Status" [ref=e105]:
+                - columnheader "No. Antrian" [ref=e106]
+                - columnheader "Nama Pengunjung" [ref=e107]
+                - columnheader "Sesi" [ref=e108]
+                - columnheader "Status" [ref=e109]
+            - rowgroup [ref=e110]:
+              - row "A005-PAGI-04042026 Ahmad Subandi PAGI Menunggu Verifikasi" [ref=e111]:
+                - cell "A005-PAGI-04042026" [ref=e112]
+                - cell "Ahmad Subandi" [ref=e113]:
+                  - generic [ref=e114]:
+                    - img [ref=e115]
+                    - text: Ahmad Subandi
+                - cell "PAGI" [ref=e117]
+                - cell "Menunggu Verifikasi" [ref=e118]
+              - row "A002-PAGI-04042026 Ahmad Subandi PAGI Menunggu Verifikasi" [ref=e119]:
+                - cell "A002-PAGI-04042026" [ref=e120]
+                - cell "Ahmad Subandi" [ref=e121]:
+                  - generic [ref=e122]:
+                    - img [ref=e123]
+                    - text: Ahmad Subandi
+                - cell "PAGI" [ref=e125]
+                - cell "Menunggu Verifikasi" [ref=e126]
+              - row "A001-PAGI-04042026 Ahmad Subandi PAGI Menunggu Verifikasi" [ref=e127]:
+                - cell "A001-PAGI-04042026" [ref=e128]
+                - cell "Ahmad Subandi" [ref=e129]:
+                  - generic [ref=e130]:
+                    - img [ref=e131]
+                    - text: Ahmad Subandi
+                - cell "PAGI" [ref=e133]
+                - cell "Menunggu Verifikasi" [ref=e134]
+              - row "A006-PAGI-04042026 Maria Ulfa PAGI Disetujui" [ref=e135]:
+                - cell "A006-PAGI-04042026" [ref=e136]
+                - cell "Maria Ulfa" [ref=e137]:
+                  - generic [ref=e138]:
+                    - img [ref=e139]
+                    - text: Maria Ulfa
+                - cell "PAGI" [ref=e141]
+                - cell "Disetujui" [ref=e142]
+              - row "A003-PAGI-04042026 Maria Ulfa PAGI Selesai" [ref=e143]:
+                - cell "A003-PAGI-04042026" [ref=e144]
+                - cell "Maria Ulfa" [ref=e145]:
+                  - generic [ref=e146]:
+                    - img [ref=e147]
+                    - text: Maria Ulfa
+                - cell "PAGI" [ref=e149]
+                - cell "Selesai" [ref=e150]
+              - row "A007-PAGI-04042026 Dewi Kusuma PAGI Menunggu Dipanggil" [ref=e151]:
+                - cell "A007-PAGI-04042026" [ref=e152]
+                - cell "Dewi Kusuma" [ref=e153]:
+                  - generic [ref=e154]:
+                    - img [ref=e155]
+                    - text: Dewi Kusuma
+                - cell "PAGI" [ref=e157]
+                - cell "Menunggu Dipanggil" [ref=e158]
+              - row "A004-PAGI-04042026 Dewi Kusuma PAGI Menunggu Dipanggil" [ref=e159]:
+                - cell "A004-PAGI-04042026" [ref=e160]
+                - cell "Dewi Kusuma" [ref=e161]:
+                  - generic [ref=e162]:
+                    - img [ref=e163]
+                    - text: Dewi Kusuma
+                - cell "PAGI" [ref=e165]
+                - cell "Menunggu Dipanggil" [ref=e166]

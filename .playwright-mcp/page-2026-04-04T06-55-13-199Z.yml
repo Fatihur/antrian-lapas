@@ -1,0 +1,41 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - img [ref=e7]
+        - generic [ref=e9]:
+          - heading "E-Antrian Lapas Sumbawa" [level=1] [ref=e10]
+          - paragraph [ref=e11]: Sistem Antrian Kunjungan Online
+      - link "Login Admin" [ref=e12] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/login
+  - generic [ref=e14]:
+    - heading "Selamat Datang di E-Antrian Kunjungan" [level=2] [ref=e15]
+    - paragraph [ref=e16]: Daftar antrian kunjungan untuk WBP (Warga Binaan Pemasyarakatan) secara online. Hemat waktu dan hindari antrian panjang.
+    - generic [ref=e17]:
+      - link "Ambil Antrian" [ref=e18] [cursor=pointer]:
+        - /url: http://localhost:8000/ambil-antrian
+        - img [ref=e19]
+        - text: Ambil Antrian
+      - link "Cek Status Antrian" [ref=e21] [cursor=pointer]:
+        - /url: http://localhost:8000/cek-status
+        - img [ref=e22]
+        - text: Cek Status Antrian
+  - generic [ref=e25]:
+    - heading "Fitur Utama" [level=3] [ref=e26]
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - img [ref=e30]
+        - heading "Pendaftaran Online" [level=4] [ref=e32]
+        - paragraph [ref=e33]: Daftar antrian kunjungan kapan saja dan di mana saja tanpa harus datang ke loket.
+      - generic [ref=e34]:
+        - img [ref=e36]
+        - heading "Cek Status Real-time" [level=4] [ref=e38]
+        - paragraph [ref=e39]: Pantau status antrian Anda secara real-time dan unduh ulang bukti antrian.
+      - generic [ref=e40]:
+        - img [ref=e42]
+        - heading "Multi Pengikut" [level=4] [ref=e44]
+        - paragraph [ref=e45]: Daftarkan hingga 10 pengikut dalam satu antrian untuk kunjungan bersama.
+  - contentinfo [ref=e46]:
+    - generic [ref=e48]:
+      - paragraph [ref=e49]: © 2026 Lembaga Pemasyarakatan Kelas IIB Sumbawa.
+      - paragraph [ref=e50]: Jl. Lintas Sumbawa No. 123, Sumbawa Besar

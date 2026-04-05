@@ -1,0 +1,336 @@
+{
+  "project": "E-Antrian Kunjungan Lapas Sumbawa",
+  "branchName": "main",
+  "description": "Aplikasi antrian kunjungan Lapas Sumbawa dengan Laravel 11, Livewire 3, MySQL. Fitur: pendaftaran antrian dengan multi-pengikut, PDF bukti antrian, cek status, admin dashboard, panggil antrian, manajemen jadwal & kuota, laporan.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Setup database migrations for all 6 tables",
+      "description": "Create migrations for admins, visit_schedules, visit_queues, visit_followers, queue_status_logs, and queue_calls tables with proper indexes and foreign keys",
+      "acceptanceCriteria": [
+        "All 6 migration files created with proper schema",
+        "Foreign keys and indexes properly defined",
+        "Migration runs successfully",
+        "Database structure matches PRD specifications"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": "Foundation tables: admins, visit_schedules, visit_queues, visit_followers, queue_status_logs, queue_calls"
+    },
+    {
+      "id": "US-002",
+      "title": "Create Eloquent models with relationships",
+      "description": "Create models: Admin, VisitSchedule, VisitQueue, VisitFollower, QueueStatusLog, QueueCall with proper relationships, fillable fields, and accessors",
+      "acceptanceCriteria": [
+        "All 6 models created with proper namespace App\\Models",
+        "Relationships defined: hasMany, belongsTo",
+        "Fillable and casts properly configured",
+        "Model factories created for testing"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": "VisitSchedule hasMany VisitQueue, VisitQueue hasMany VisitFollower/QueueStatusLog/QueueCall"
+    },
+    {
+      "id": "US-003",
+      "title": "Create AdminSeeder for default admin account",
+      "description": "Create database seeder to insert default super admin account with hashed password",
+      "acceptanceCriteria": [
+        "AdminSeeder creates default admin with role super_admin",
+        "Password properly hashed using Hash::make",
+        "Seeder runs successfully"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "Default admin: username=admin, password=password123, role=super_admin"
+    },
+    {
+      "id": "US-004",
+      "title": "Implement custom authentication system for admin",
+      "description": "Create custom auth without Breeze/Jetstream: login controller, middleware, session-based auth using guards",
+      "acceptanceCriteria": [
+        "AuthController with login/logout methods",
+        "AdminMiddleware for route protection",
+        "Session-based authentication working",
+        "CSRF protection implemented",
+        "Rate limiting on login endpoint",
+        "Login page UI with Tailwind"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "Use Laravel's built-in session auth, Hash::make for passwords, custom guard if needed"
+    },
+    {
+      "id": "US-005",
+      "title": "Create QueueNumberGenerator service class",
+      "description": "Build service class to generate unique queue numbers per date and session (e.g., A001-PAGI-04042026)",
+      "acceptanceCriteria": [
+        "Service class in App\\Services namespace",
+        "Generate unique queue numbers per date and sesi",
+        "Format: [A-Z][0-9]{3}-[PAGI/SIANG]-[DDMMYYYY]",
+        "Thread-safe implementation using database transactions"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "Must ensure uniqueness per tanggal_kunjungan and sesi_kunjungan"
+    },
+    {
+      "id": "US-006",
+      "title": "Create PDF ticket generator service",
+      "description": "Build PDF generation service using barryvdh/laravel-dompdf to create queue tickets with all visitor and follower data",
+      "acceptanceCriteria": [
+        "PdfTicketService in App\\Services namespace",
+        "Generate PDF with all required data per PRD",
+        "Include logo, booking code, queue number, visitor details, followers table",
+        "Save PDF to storage and return path",
+        "PDF template uses clean professional design"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "PDF contents: logo, kode_booking, nomor_antrian, tanggal_daftar, tanggal_kunjungan, sesi, status, all visitor data, followers table, total counts, instructions"
+    },
+    {
+      "id": "US-007",
+      "title": "Create visitor queue registration Livewire component",
+      "description": "Build Livewire component for Ambil Antrian with form validation, file upload for identity photo, dynamic follower addition, session quota checking",
+      "acceptanceCriteria": [
+        "Livewire component AmbilAntrian with form handling",
+        "Validation: NIK, jenis_identitas, nama, no_hp, hubungan_wbp, nama_wbp, tanggal_kunjungan, sesi_kunjungan, foto_identitas",
+        "Dynamic repeater for adding multiple followers (nama, nomor_identitas, jenis_kelamin)",
+        "File upload with Livewire for foto_identitas (jpg/jpeg/png/pdf, max 2MB)",
+        "Check quota availability before submission",
+        "Generate queue number and PDF upon success",
+        "Show success page with queue number and download PDF button",
+        "Tailwind styling with clean modern design"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "Use stepper UI: Data Pengunjung -> Data Pengikut -> Jadwal Kunjungan -> Konfirmasi. Use WithFileUploads trait."
+    },
+    {
+      "id": "US-008",
+      "title": "Create queue status check page (Cek Status)",
+      "description": "Build page to check queue status using NIK with Livewire, display queue details and PDF download option",
+      "acceptanceCriteria": [
+        "Livewire component CekStatusAntrian with search form",
+        "Search by NIK/identification number",
+        "Display: nomor_antrian, tanggal_kunjungan, sesi, status, visitor data, followers list",
+        "Show status badge with appropriate colors",
+        "Download PDF button for re-downloading ticket",
+        "Show message if queue not found",
+        "Responsive design with Tailwind"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "Public page, no authentication required. Show all active queues for the given NIK."
+    },
+    {
+      "id": "US-009",
+      "title": "Create public landing page (Beranda)",
+      "description": "Build clean modern landing page with header, hero section, CTA buttons for Ambil Antrian and Cek Status",
+      "acceptanceCriteria": [
+        "Simple header with logo and navigation",
+        "Hero section with service title and description",
+        "Two prominent buttons: Ambil Antrian (primary) and Cek Status (secondary)",
+        "Footer with contact info",
+        "Responsive design",
+        "Clean professional styling with institutional colors"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "Color scheme: Primary (dark teal/blue-green), Secondary (slate), Background (off-white/gray-50)"
+    },
+    {
+      "id": "US-010",
+      "title": "Build admin dashboard with statistics",
+      "description": "Create admin dashboard showing today's queue summary, status counts, queues per session, and currently called queue",
+      "acceptanceCriteria": [
+        "DashboardController or Livewire component",
+        "Statistics cards: total queues today, per status count, per session count",
+        "Currently called queue panel with visitor details",
+        "Quick links to Queue Management and Call Queue",
+        "Recent queues table",
+        "Tailwind styling with clean admin layout",
+        "Responsive sidebar navigation"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "Status counts: Menunggu Verifikasi, Disetujui, Ditolak, Menunggu Dipanggil, Dipanggil, Selesai, Kedaluwarsa"
+    },
+    {
+      "id": "US-011",
+      "title": "Create queue management page for admin",
+      "description": "Build queue listing page with filters, search, detail view, and actions to approve/reject/update status",
+      "acceptanceCriteria": [
+        "Livewire component ManajemenAntrian with data table",
+        "Filters: date range, session, status",
+        "Search by: nomor_antrian, nama_pengunjung, NIK",
+        "Data table with pagination showing queue number, visitor name, date, session, status",
+        "Detail slide-over/modal showing complete visitor and follower data",
+        "Actions: Setujui, Tolak, Ubah Status buttons with confirmation",
+        "Status badges with consistent colors",
+        "Audit log view for each queue"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "Admin can view photo identity (foto_identitas) for verification. Actions update status and create queue_status_logs entry."
+    },
+    {
+      "id": "US-012",
+      "title": "Build queue calling system (Panggil Antrian)",
+      "description": "Create two-column layout page: left side shows waiting queues, right side shows large active called queue with visitor details",
+      "acceptanceCriteria": [
+        "Livewire component PanggilAntrian with two-column layout",
+        "Left column: filter by date and session, list of queues with Menunggu Dipanggil status",
+        "Right column: large display of currently called queue number (big text)",
+        "Visitor and follower details panel for active queue",
+        "Call button on waiting queues to change status to Dipanggil",
+        "Complete and Skip buttons for active queue",
+        "Auto-refresh or Livewire polling for real-time updates",
+        "Sound notification option when calling (optional)"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "Only queues with Disetujui status can be called. Only super_admin or operator role can call."
+    },
+    {
+      "id": "US-013",
+      "title": "Create schedule and quota management",
+      "description": "Build CRUD for visit schedules with date, session, quota, status, and time settings",
+      "acceptanceCriteria": [
+        "Livewire component JadwalDanKuota with CRUD operations",
+        "Form fields: tanggal, sesi (PAGI/SIANG), kuota_maksimal, status_jadwal (buka/tutup), jam_mulai, jam_selesai, keterangan",
+        "Calendar view or table view of schedules",
+        "Validation: tanggal must be future or today, kuota > 0",
+        "Prevent duplicate schedules for same date+session",
+        "Quick toggle to open/close schedule",
+        "Search and filter by date range"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "Used for quota checking during queue registration. System checks available quota before accepting new queue."
+    },
+    {
+      "id": "US-014",
+      "title": "Create reports module with export",
+      "description": "Build reports page showing daily and monthly summaries with PDF and Excel export functionality",
+      "acceptanceCriteria": [
+        "Livewire component Laporan with date range picker",
+        "Summary statistics: total queues, per status, per session, unique visitors",
+        "Data table showing all queues in date range",
+        "Export to PDF button using DomPDF",
+        "Export to Excel button using maatwebsite/excel",
+        "Print-friendly styling",
+        "Filter by status and session"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "Report format: summary cards at top, detail table below. PDF export for official reporting."
+    },
+    {
+      "id": "US-015",
+      "title": "Create admin management (Super Admin only)",
+      "description": "Build CRUD for managing admin accounts with role assignment (super_admin, operator), activation toggle",
+      "acceptanceCriteria": [
+        "Livewire component ManajemenAdmin (Super Admin only)",
+        "Table listing all admin accounts with nama, username, email, role, is_active, last_login_at",
+        "Create/Edit form with validation",
+        "Role selection: super_admin or operator",
+        "Active/Inactive toggle with confirmation",
+        "Password reset functionality",
+        "Prevent self-deactivation or demotion",
+        "Search by name or username"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "Only super_admin can access this page. Cannot delete own account or remove super_admin from self."
+    },
+    {
+      "id": "US-016",
+      "title": "Create shared UI components",
+      "description": "Build reusable Blade components for status badges, buttons, forms, alerts, and admin layout",
+      "acceptanceCriteria": [
+        "StatusBadge component with all 7 status colors",
+        "PrimaryButton, SecondaryButton, DangerButton components",
+        "Form input components with validation error display",
+        "Alert/Success message component",
+        "Admin layout with sidebar navigation and topbar",
+        "Public layout with header and footer",
+        "All components use Tailwind with consistent styling"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "Components in resources/views/components. Admin layout includes navigation for all admin pages."
+    },
+    {
+      "id": "US-017",
+      "title": "Setup routes and route protection",
+      "description": "Define all routes in web.php with proper middleware and route groups",
+      "acceptanceCriteria": [
+        "Public routes: /, /ambil-antrian, /cek-status",
+        "Admin routes group with auth and admin middleware",
+        "Named routes for all endpoints",
+        "Route middleware properly configured",
+        "404 page for undefined routes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "Route structure: /admin/dashboard, /admin/antrian, /admin/panggil, /admin/jadwal, /admin/laporan, /admin/pengguna"
+    },
+    {
+      "id": "US-018",
+      "title": "Add validation and error handling",
+      "description": "Implement comprehensive validation for all forms with proper error messages in Indonesian",
+      "acceptanceCriteria": [
+        "All forms have validation rules matching PRD",
+        "Validation messages in Indonesian",
+        "Inline validation errors display",
+        "File upload validation: type, size, format",
+        "Unique validation for queue numbers and booking codes",
+        "Custom validation for quota availability",
+        "Proper error handling with try-catch blocks"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": "Validation lang files in Indonesian. Custom error messages for better UX."
+    },
+    {
+      "id": "US-019",
+      "title": "Style all pages with Tailwind CSS",
+      "description": "Apply consistent modern clean design to all pages using Tailwind CSS per PRD specifications",
+      "acceptanceCriteria": [
+        "All pages styled with Tailwind",
+        "Color scheme: Primary (dark teal/blue-green #0f766e), Secondary (slate), Success (green), Warning (amber), Danger (red), Background (gray-50/off-white)",
+        "Typography: Inter or Public Sans font",
+        "Responsive design for mobile and desktop",
+        "Cards with subtle shadows and rounded corners",
+        "Proper spacing and whitespace",
+        "Status badges with consistent colors"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": "Extend tailwind.config.js with custom colors. Use @apply for common patterns."
+    },
+    {
+      "id": "US-020",
+      "title": "Final testing and verification",
+      "description": "Test all features end-to-end, run migrations, verify PDF generation, test authentication, validate all forms",
+      "acceptanceCriteria": [
+        "All migrations run successfully",
+        "Seeder creates default admin",
+        "Visitor can register queue with followers",
+        "PDF generates correctly with all data",
+        "Queue status check works with NIK",
+        "Admin login and logout working",
+        "All admin features functional",
+        "Queue calling system works",
+        "Reports export correctly",
+        "No errors in browser console",
+        "Responsive on mobile devices"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": "Test all acceptance criteria from PRD. Verify clean code principles applied throughout."
+    }
+  ]
+}

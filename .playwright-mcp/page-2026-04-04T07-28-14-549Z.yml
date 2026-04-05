@@ -1,0 +1,283 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e9]:
+        - heading "E-Antrian" [level=1] [ref=e10]
+        - paragraph [ref=e11]: Lapas Sumbawa
+    - navigation [ref=e12]:
+      - link "Dashboard" [ref=e13] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/dashboard
+        - img [ref=e14]
+        - generic [ref=e19]: Dashboard
+      - link "Data Antrian" [ref=e20] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/antrian
+        - img [ref=e21]
+        - generic [ref=e23]: Data Antrian
+      - link "Panggil Antrian" [ref=e24] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/panggil
+        - img [ref=e25]
+        - generic [ref=e27]: Panggil Antrian
+      - paragraph [ref=e29]: Pengaturan
+      - link "Jadwal & Kuota" [ref=e30] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/jadwal
+        - img [ref=e31]
+        - generic [ref=e33]: Jadwal & Kuota
+      - link "Laporan" [ref=e34] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/laporan
+        - img [ref=e35]
+        - generic [ref=e38]: Laporan
+      - link "Manajemen Admin" [ref=e39] [cursor=pointer]:
+        - /url: http://localhost:8000/admin/pengguna
+        - img [ref=e40]
+        - generic [ref=e43]: Manajemen Admin
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - generic [ref=e46]: S
+        - generic [ref=e47]:
+          - paragraph [ref=e48]: Super Admin
+          - paragraph [ref=e49]: Super Admin
+      - button "Logout" [ref=e51] [cursor=pointer]:
+        - img [ref=e52]
+        - generic [ref=e54]: Logout
+  - generic [ref=e55]:
+    - banner [ref=e56]:
+      - generic [ref=e57]:
+        - heading "Data Antrian" [level=2] [ref=e59]
+        - link "Lihat Website" [ref=e61] [cursor=pointer]:
+          - /url: http://localhost:8000
+          - img [ref=e62]
+          - text: Lihat Website
+    - main [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - button "Kalender" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - text: Kalender
+            - button "Daftar" [ref=e71] [cursor=pointer]:
+              - img [ref=e72]
+              - text: Daftar
+          - button "Hari Ini" [ref=e73] [cursor=pointer]:
+            - img [ref=e74]
+            - text: Hari Ini
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - button [ref=e79] [cursor=pointer]:
+              - img [ref=e80]
+            - generic [ref=e82]:
+              - heading "April 2026" [level=2] [ref=e83]
+              - paragraph [ref=e84]: Klik tanggal untuk melihat daftar antrian
+            - button [ref=e85] [cursor=pointer]:
+              - img [ref=e86]
+          - generic [ref=e88]:
+            - generic [ref=e89]: "Keterangan:"
+            - generic [ref=e90]: Menunggu Verifikasi
+            - generic [ref=e91]: Disetujui / Aktif
+            - generic [ref=e92]: Selesai
+            - generic [ref=e93]: Ditolak
+          - generic [ref=e94]:
+            - generic [ref=e95]: Sen
+            - generic [ref=e96]: Sel
+            - generic [ref=e97]: Rab
+            - generic [ref=e98]: Kam
+            - generic [ref=e99]: Jum
+            - generic [ref=e100]: Sab
+            - generic [ref=e101]: Min
+          - generic [ref=e102]:
+            - button "30" [ref=e103] [cursor=pointer]:
+              - generic [ref=e105]: "30"
+            - button "31" [ref=e106] [cursor=pointer]:
+              - generic [ref=e108]: "31"
+            - button "1" [ref=e109] [cursor=pointer]:
+              - generic [ref=e111]: "1"
+            - button "2" [ref=e112] [cursor=pointer]:
+              - generic [ref=e114]: "2"
+            - button "3" [ref=e115] [cursor=pointer]:
+              - generic [ref=e117]: "3"
+            - button "4 7 pengunjung 3 menunggu 3 disetujui 1 selesai" [ref=e118] [cursor=pointer]:
+              - generic [ref=e119]:
+                - generic [ref=e120]: "4"
+                - generic [ref=e121]: 7 pengunjung
+              - generic [ref=e122]:
+                - generic [ref=e124]: 3 menunggu
+                - generic [ref=e126]: 3 disetujui
+                - generic [ref=e128]: 1 selesai
+            - button "5" [ref=e129] [cursor=pointer]:
+              - generic [ref=e131]: "5"
+            - button "6" [ref=e132] [cursor=pointer]:
+              - generic [ref=e134]: "6"
+            - button "7" [ref=e135] [cursor=pointer]:
+              - generic [ref=e137]: "7"
+            - button "8" [ref=e138] [cursor=pointer]:
+              - generic [ref=e140]: "8"
+            - button "9" [ref=e141] [cursor=pointer]:
+              - generic [ref=e143]: "9"
+            - button "10" [ref=e144] [cursor=pointer]:
+              - generic [ref=e146]: "10"
+            - button "11" [ref=e147] [cursor=pointer]:
+              - generic [ref=e149]: "11"
+            - button "12" [ref=e150] [cursor=pointer]:
+              - generic [ref=e152]: "12"
+            - button "13" [ref=e153] [cursor=pointer]:
+              - generic [ref=e155]: "13"
+            - button "14" [ref=e156] [cursor=pointer]:
+              - generic [ref=e158]: "14"
+            - button "15" [ref=e159] [cursor=pointer]:
+              - generic [ref=e161]: "15"
+            - button "16" [ref=e162] [cursor=pointer]:
+              - generic [ref=e164]: "16"
+            - button "17" [ref=e165] [cursor=pointer]:
+              - generic [ref=e167]: "17"
+            - button "18" [ref=e168] [cursor=pointer]:
+              - generic [ref=e170]: "18"
+            - button "19" [ref=e171] [cursor=pointer]:
+              - generic [ref=e173]: "19"
+            - button "20" [ref=e174] [cursor=pointer]:
+              - generic [ref=e176]: "20"
+            - button "21" [ref=e177] [cursor=pointer]:
+              - generic [ref=e179]: "21"
+            - button "22" [ref=e180] [cursor=pointer]:
+              - generic [ref=e182]: "22"
+            - button "23" [ref=e183] [cursor=pointer]:
+              - generic [ref=e185]: "23"
+            - button "24" [ref=e186] [cursor=pointer]:
+              - generic [ref=e188]: "24"
+            - button "25" [ref=e189] [cursor=pointer]:
+              - generic [ref=e191]: "25"
+            - button "26" [ref=e192] [cursor=pointer]:
+              - generic [ref=e194]: "26"
+            - button "27" [ref=e195] [cursor=pointer]:
+              - generic [ref=e197]: "27"
+            - button "28" [ref=e198] [cursor=pointer]:
+              - generic [ref=e200]: "28"
+            - button "29" [ref=e201] [cursor=pointer]:
+              - generic [ref=e203]: "29"
+            - button "30" [ref=e204] [cursor=pointer]:
+              - generic [ref=e206]: "30"
+            - button "1" [ref=e207] [cursor=pointer]:
+              - generic [ref=e209]: "1"
+            - button "2" [ref=e210] [cursor=pointer]:
+              - generic [ref=e212]: "2"
+            - button "3" [ref=e213] [cursor=pointer]:
+              - generic [ref=e215]: "3"
+        - generic [ref=e216]:
+          - generic [ref=e217]:
+            - generic [ref=e218]:
+              - img [ref=e220]
+              - generic [ref=e222]:
+                - heading "Sabtu, 4 April 2026" [level=3] [ref=e223]
+                - paragraph [ref=e224]: 7 antrian ditemukan
+            - generic [ref=e225]:
+              - combobox [ref=e226]:
+                - option "Semua Status" [selected]
+                - option "Menunggu Verifikasi"
+                - option "Disetujui"
+                - option "Ditolak"
+                - option "Menunggu Dipanggil"
+                - option "Dipanggil"
+                - option "Selesai"
+                - option "Kedaluwarsa"
+              - button [ref=e227] [cursor=pointer]:
+                - img [ref=e228]
+          - table [ref=e231]:
+            - rowgroup [ref=e232]:
+              - row "No. Antrian Nama Pengunjung Sesi Pengikut Status Aksi" [ref=e233]:
+                - columnheader "No. Antrian" [ref=e234]
+                - columnheader "Nama Pengunjung" [ref=e235]
+                - columnheader "Sesi" [ref=e236]
+                - columnheader "Pengikut" [ref=e237]
+                - columnheader "Status" [ref=e238]
+                - columnheader "Aksi" [ref=e239]
+            - rowgroup [ref=e240]:
+              - row "A001-PAGI-04042026 A Ahmad Subandi 7372010101010001 PAGI - Menunggu Verifikasi Detail" [ref=e241]:
+                - cell "A001-PAGI-04042026" [ref=e242]
+                - cell "A Ahmad Subandi 7372010101010001" [ref=e243]:
+                  - generic [ref=e244]:
+                    - generic [ref=e246]: A
+                    - generic [ref=e247]:
+                      - paragraph [ref=e248]: Ahmad Subandi
+                      - paragraph [ref=e249]: "7372010101010001"
+                - cell "PAGI" [ref=e250]
+                - cell "-" [ref=e251]
+                - cell "Menunggu Verifikasi" [ref=e252]
+                - cell "Detail" [ref=e253]:
+                  - button "Detail" [ref=e254] [cursor=pointer]
+              - row "A002-PAGI-04042026 A Ahmad Subandi 7372010101010001 PAGI +2 orang Menunggu Verifikasi Detail" [ref=e255]:
+                - cell "A002-PAGI-04042026" [ref=e256]
+                - cell "A Ahmad Subandi 7372010101010001" [ref=e257]:
+                  - generic [ref=e258]:
+                    - generic [ref=e260]: A
+                    - generic [ref=e261]:
+                      - paragraph [ref=e262]: Ahmad Subandi
+                      - paragraph [ref=e263]: "7372010101010001"
+                - cell "PAGI" [ref=e264]
+                - cell "+2 orang" [ref=e265]
+                - cell "Menunggu Verifikasi" [ref=e266]
+                - cell "Detail" [ref=e267]:
+                  - button "Detail" [ref=e268] [cursor=pointer]
+              - row "A003-PAGI-04042026 M Maria Ulfa 7372040404040001 PAGI +1 orang Selesai Detail" [ref=e269]:
+                - cell "A003-PAGI-04042026" [ref=e270]
+                - cell "M Maria Ulfa 7372040404040001" [ref=e271]:
+                  - generic [ref=e272]:
+                    - generic [ref=e274]: M
+                    - generic [ref=e275]:
+                      - paragraph [ref=e276]: Maria Ulfa
+                      - paragraph [ref=e277]: "7372040404040001"
+                - cell "PAGI" [ref=e278]
+                - cell "+1 orang" [ref=e279]
+                - cell "Selesai" [ref=e280]
+                - cell "Detail" [ref=e281]:
+                  - button "Detail" [ref=e282] [cursor=pointer]
+              - row "A004-PAGI-04042026 D Dewi Kusuma 7372060606060001 PAGI - Menunggu Dipanggil Detail" [ref=e283]:
+                - cell "A004-PAGI-04042026" [ref=e284]
+                - cell "D Dewi Kusuma 7372060606060001" [ref=e285]:
+                  - generic [ref=e286]:
+                    - generic [ref=e288]: D
+                    - generic [ref=e289]:
+                      - paragraph [ref=e290]: Dewi Kusuma
+                      - paragraph [ref=e291]: "7372060606060001"
+                - cell "PAGI" [ref=e292]
+                - cell "-" [ref=e293]
+                - cell "Menunggu Dipanggil" [ref=e294]
+                - cell "Detail" [ref=e295]:
+                  - button "Detail" [ref=e296] [cursor=pointer]
+              - row "A005-PAGI-04042026 A Ahmad Subandi 7372010101010001 PAGI +2 orang Menunggu Verifikasi Detail" [ref=e297]:
+                - cell "A005-PAGI-04042026" [ref=e298]
+                - cell "A Ahmad Subandi 7372010101010001" [ref=e299]:
+                  - generic [ref=e300]:
+                    - generic [ref=e302]: A
+                    - generic [ref=e303]:
+                      - paragraph [ref=e304]: Ahmad Subandi
+                      - paragraph [ref=e305]: "7372010101010001"
+                - cell "PAGI" [ref=e306]
+                - cell "+2 orang" [ref=e307]
+                - cell "Menunggu Verifikasi" [ref=e308]
+                - cell "Detail" [ref=e309]:
+                  - button "Detail" [ref=e310] [cursor=pointer]
+              - row "A006-PAGI-04042026 M Maria Ulfa 7372040404040001 PAGI +1 orang Disetujui Detail" [ref=e311]:
+                - cell "A006-PAGI-04042026" [ref=e312]
+                - cell "M Maria Ulfa 7372040404040001" [ref=e313]:
+                  - generic [ref=e314]:
+                    - generic [ref=e316]: M
+                    - generic [ref=e317]:
+                      - paragraph [ref=e318]: Maria Ulfa
+                      - paragraph [ref=e319]: "7372040404040001"
+                - cell "PAGI" [ref=e320]
+                - cell "+1 orang" [ref=e321]
+                - cell "Disetujui" [ref=e322]
+                - cell "Detail" [ref=e323]:
+                  - button "Detail" [ref=e324] [cursor=pointer]
+              - row "A007-PAGI-04042026 D Dewi Kusuma 7372060606060001 PAGI - Menunggu Dipanggil Detail" [ref=e325]:
+                - cell "A007-PAGI-04042026" [ref=e326]
+                - cell "D Dewi Kusuma 7372060606060001" [ref=e327]:
+                  - generic [ref=e328]:
+                    - generic [ref=e330]: D
+                    - generic [ref=e331]:
+                      - paragraph [ref=e332]: Dewi Kusuma
+                      - paragraph [ref=e333]: "7372060606060001"
+                - cell "PAGI" [ref=e334]
+                - cell "-" [ref=e335]
+                - cell "Menunggu Dipanggil" [ref=e336]
+                - cell "Detail" [ref=e337]:
+                  - button "Detail" [ref=e338] [cursor=pointer]

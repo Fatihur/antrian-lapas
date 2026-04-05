@@ -1,0 +1,67 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - heading "Ambil Antrian Kunjungan" [level=2] [ref=e7]
+    - paragraph [ref=e8]: Langkah 1 dari 4
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e12]: "1"
+      - generic [ref=e15]: "2"
+      - generic [ref=e18]: "3"
+    - generic [ref=e19]:
+      - generic [ref=e20]: Data Pengunjung
+      - generic [ref=e21]: Data Pengikut
+      - generic [ref=e22]: Jadwal
+  - generic [ref=e23]:
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - img [ref=e27]
+        - heading "Data Pengunjung Utama" [level=3] [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: NIK / Nomor Identitas *
+          - textbox "Masukkan 16 digit NIK" [ref=e33]
+        - generic [ref=e34]:
+          - generic [ref=e35]: Jenis Identitas *
+          - combobox [ref=e36]:
+            - option "-- Pilih Jenis Identitas --"
+            - option "KTP" [selected]
+            - option "SIM"
+            - option "Paspor"
+            - option "Kartu Keluarga"
+            - option "Lainnya"
+        - generic [ref=e37]:
+          - generic [ref=e38]: Nama Lengkap *
+          - textbox "Masukkan nama lengkap sesuai identitas" [ref=e39]
+        - generic [ref=e40]:
+          - generic [ref=e41]: Nomor HP / WhatsApp *
+          - generic [ref=e42]:
+            - generic [ref=e43]: "+62"
+            - textbox "Masukkan 10-15 digit nomor HP" [ref=e44]:
+              - /placeholder: 8xxxxxxxxxx
+          - paragraph [ref=e45]: "Contoh: 81234567890"
+        - generic [ref=e46]:
+          - generic [ref=e47]: Hubungan dengan WBP *
+          - combobox [ref=e48]:
+            - option "-- Pilih Hubungan --" [selected]
+            - option "Suami/Istri"
+            - option "Anak"
+            - option "Orang Tua"
+            - option "Saudara"
+            - option "Keluarga Lain"
+            - option "Teman"
+            - option "Pengacara"
+            - option "Lainnya"
+        - generic [ref=e49]:
+          - generic [ref=e50]: Nama WBP (Warga Binaan Pemasyarakatan) *
+          - textbox "Masukkan nama WBP yang akan dikunjungi" [ref=e51]
+        - generic [ref=e52]:
+          - generic [ref=e53]: Foto Identitas *
+          - generic [ref=e54]:
+            - button "Choose File" [ref=e55]
+            - paragraph [ref=e56]: "Format: JPG, JPEG, PNG. Maksimal 2MB"
+    - generic [ref=e57]:
+      - link "Batal" [ref=e58] [cursor=pointer]:
+        - /url: http://localhost:8000
+      - button "Lanjutkan" [ref=e59] [cursor=pointer]:
+        - text: Lanjutkan
+        - img [ref=e60]
