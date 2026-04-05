@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#1e3a5f">
     <title>@yield('title', $title ?? 'E-Antrian Kunjungan Lapas Sumbawa')</title>
     
     <!-- Fonts -->
@@ -20,12 +21,13 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #f0f4f8, #e2e8f0);
         }
         [x-cloak] { display: none !important; }
         
         /* Custom form styling */
         .form-input {
-            @apply w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 focus:outline-none transition-all duration-200;
+            @apply w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20 focus:outline-none transition-all duration-200;
         }
         .form-input.error {
             @apply border-red-500 focus:border-red-500 focus:ring-red-200;
@@ -40,7 +42,7 @@
     
     @stack('styles')
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased">
+<body class="text-gray-900 antialiased min-h-screen">
     <div id="app">
         @yield('content')
         {{ $slot ?? '' }}
