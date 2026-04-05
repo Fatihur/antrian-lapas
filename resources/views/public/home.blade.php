@@ -56,7 +56,7 @@
             <!-- Institution Logo Banner -->
             <div class="bg-white rounded-xl sm:rounded-2xl shadow-lg border-2 border-[#1e3a5f]/20 p-6 sm:p-8 text-center">
                 <div class="flex justify-center mb-4">
-                    <div class="w-24 h-24 sm:w-32 sm:h-32 bg-[#1e3a5f] rounded-full flex items-center justify-center shadow-xl p-3">
+                    <div class="w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-full flex items-center justify-center shadow-xl p-3 border-4 border-[#1e3a5f]">
                         <img src="{{ asset('logo.png') }}" alt="Logo Kemenkumham" class="w-full h-full object-contain">
                     </div>
                 </div>
