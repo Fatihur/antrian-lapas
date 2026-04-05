@@ -39,7 +39,7 @@
                     </div>
                     <div class="min-w-0">
                         <h1 class="text-sm sm:text-lg font-bold text-white truncate">E-Antrian Lapas Sumbawa</h1>
-                        <p class="text-[10px] sm:text-xs text-[#c9a227] hidden sm:block">Kementerian Hukum dan HAM RI</p>
+                        <p class="text-[10px] sm:text-xs text-[#c9a227] hidden sm:block">Kementerian Imigrasi dan Pemasyarakatan</p>
                     </div>
                 </div>
                 <a href="{{ route('admin.login') }}" class="text-xs sm:text-sm font-medium text-[#c9a227] hover:text-[#ffd700] px-3 py-2 border border-[#c9a227] rounded-lg hover:bg-[#c9a227]/10 transition-all">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <h2 class="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-1">Lapas Kelas IIA Sumbawa</h2>
-                <p class="text-sm text-gray-600">Kementerian Hukum dan Hak Asasi Manusia</p>
+                <p class="text-sm text-gray-600">Kementerian Imigrasi dan Pemasyarakatan</p>
                 <p class="text-xs text-gray-500 mt-1">Republik Indonesia</p>
             </div>
             
@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <p class="text-sm sm:text-base font-semibold text-[#c9a227]">&copy; {{ date('Y') }} Lapas Kelas IIA Sumbawa</p>
-                <p class="text-xs sm:text-sm text-white/80 mt-1">Kementerian Hukum dan Hak Asasi Manusia Republik Indonesia</p>
+                <p class="text-xs sm:text-sm text-white/80 mt-1">Kementerian Imigrasi dan Pemasyarakatan Republik Indonesia</p>
             </div>
         </div>
     </footer>
