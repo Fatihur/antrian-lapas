@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nomor_identitas_pengikut', 25);
             $table->enum('jenis_kelamin_pengikut', ['Laki-laki', 'Perempuan']);
             $table->timestamps();
-            
+
             $table->index('visit_queue_id');
         });
     }

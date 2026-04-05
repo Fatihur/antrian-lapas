@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('jam_selesai')->nullable();
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['tanggal', 'sesi']);
             $table->index('tanggal');
             $table->index('status_jadwal');

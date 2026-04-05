@@ -275,53 +275,109 @@
                                 <h3 class="text-xl font-bold text-gray-900">Pilih Jadwal Kunjungan</h3>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="space-y-2">
-                                    <label class="form-label">Tanggal Kunjungan <span class="text-red-500">*</span></label>
-                                    <input type="date" wire:model="tanggal_kunjungan" 
-                                           min="{{ now()->format('Y-m-d') }}"
-                                           class="form-input @error('tanggal_kunjungan') error @enderror">
-                                    @error('tanggal_kunjungan') <span class="form-error">{{ $message }}</span> @enderror
-                                </div>
+                            {{-- Pilih Tanggal --}}
+                            <div class="space-y-2">
+                                <label class="form-label">1. Pilih Tanggal Kunjungan <span class="text-red-500">*</span></label>
+                                <p class="text-sm text-gray-600 mb-3">Pilih tanggal yang tersedia dari daftar di bawah.</p>
                                 
-                                <div class="space-y-2">
-                                    <label class="form-label">Sesi Kunjungan <span class="text-red-500">*</span></label>
-                                    <select wire:model="sesi_kunjungan" 
-                                            class="form-input @error('sesi_kunjungan') error @enderror bg-white">
-                                        <option value="">-- Pilih Sesi --</option>
-                                        <option value="PAGI">Pagi (08:00 - 12:00 WIB)</option>
-                                        <option value="SIANG">Siang (13:00 - 16:00 WIB)</option>
-                                    </select>
-                                    @error('sesi_kunjungan') <span class="form-error">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            
-                            @if($tanggal_kunjungan && $sesi_kunjungan)
-                                @php
-                                    $schedule = \App\Models\VisitSchedule::open()
-                                        ->where('tanggal', $tanggal_kunjungan)
-                                        ->where('sesi', $sesi_kunjungan)
-                                        ->first();
-                                @endphp
-                                @if($schedule)
-                                    <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-5">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                            </svg>
-                                            <p class="text-green-800 font-bold text-lg">Jadwal Tersedia!</p>
-                                        </div>
-                                        <p class="text-green-700">Sisa Kuota: <span class="font-bold text-2xl">{{ $schedule->sisa_kuota }}</span> orang</p>
+                                @if(count($availableSchedules) > 0)
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                                        @foreach($availableSchedules as $dateKey => $schedule)
+                                            <label class="cursor-pointer">
+                                                <input type="radio" wire:model.live="tanggal_kunjungan" value="{{ $dateKey }}" class="hidden peer">
+                                                <div class="p-3 rounded-lg border-2 transition-all peer-checked:border-teal-500 peer-checked:bg-teal-50 peer-checked:shadow-md hover:border-gray-400 {{ $tanggal_kunjungan === $dateKey ? 'border-teal-500 bg-teal-50 shadow-md' : 'border-gray-200 bg-white' }}">
+                                                    <p class="text-xs text-gray-500 font-medium">{{ $schedule['hari'] }}</p>
+                                                    <p class="font-bold text-gray-900">{{ \Carbon\Carbon::parse($dateKey)->format('d M Y') }}</p>
+                                                    <div class="mt-2 pt-2 border-t border-gray-200">
+                                                        <p class="text-xs {{ $schedule['total_sisa_kuota'] < 10 ? 'text-red-600 font-bold' : 'text-green-600' }}">
+                                                            {{ $schedule['total_sisa_kuota'] }} kuota tersisa
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        @endforeach
                                     </div>
                                 @else
-                                    <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-5">
+                                    <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-5">
                                         <div class="flex items-center gap-2">
-                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                             </svg>
-                                            <p class="text-red-800 font-bold">Jadwal tidak tersedia atau kuota sudah penuh</p>
+                                            <p class="text-yellow-800 font-medium">Tidak ada tanggal kunjungan yang tersedia saat ini</p>
                                         </div>
                                     </div>
+                                @endif
+                                
+                                @error('tanggal_kunjungan') <span class="form-error">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            {{-- Pilih Sesi (muncul setelah tanggal dipilih) --}}
+                            @if($tanggal_kunjungan && isset($availableSchedules[$tanggal_kunjungan]))
+                                @php
+                                    $selectedSchedule = $availableSchedules[$tanggal_kunjungan];
+                                @endphp
+                                <div class="space-y-3 pt-4 border-t border-gray-200">
+                                    <label class="form-label">2. Pilih Sesi Kunjungan <span class="text-red-500">*</span></label>
+                                    <p class="text-sm text-gray-600 mb-3">Pilih sesi yang masih memiliki kuota tersedia.</p>
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        @foreach($selectedSchedule['sesi'] as $sesi)
+                                            <label class="cursor-pointer">
+                                                <input type="radio" wire:model="sesi_kunjungan" value="{{ $sesi['kode'] }}" class="hidden peer">
+                                                <div class="p-4 rounded-lg border-2 transition-all peer-checked:border-teal-500 peer-checked:bg-teal-50 peer-checked:shadow-md hover:border-gray-400 {{ $sesi_kunjungan === $sesi['kode'] ? 'border-teal-500 bg-teal-50 shadow-md' : 'border-gray-200 bg-white' }}">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <span class="font-bold text-gray-900">{{ $sesi['nama'] }}</span>
+                                                        <span class="px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs font-semibold">
+                                                            {{ $sesi['sisa_kuota'] }} tersisa
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-sm text-gray-600 mb-1">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        {{ $sesi['jam'] }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">Kuota: {{ $sesi['kuota_maksimal'] }} orang/sesi</p>
+                                                </div>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    
+                                    @error('sesi_kunjungan') <span class="form-error">{{ $message }}</span> @enderror
+                                </div>
+                                
+                                {{-- Summary --}}
+                                @if($tanggal_kunjungan && $sesi_kunjungan)
+                                    @php
+                                        $selectedSesi = collect($selectedSchedule['sesi'])->firstWhere('kode', $sesi_kunjungan);
+                                    @endphp
+                                    @if($selectedSesi)
+                                        <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-5 mt-4">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                <p class="text-green-800 font-bold text-lg">Jadwal Tersedia!</p>
+                                            </div>
+                                            <div class="space-y-1 text-sm">
+                                                <p class="text-green-700">
+                                                    <span class="font-semibold">Tanggal:</span> 
+                                                    {{ \Carbon\Carbon::parse($tanggal_kunjungan)->format('d F Y') }} 
+                                                    ({{ \Carbon\Carbon::parse($tanggal_kunjungan)->locale('id')->dayName }})
+                                                </p>
+                                                <p class="text-green-700">
+                                                    <span class="font-semibold">Sesi:</span> {{ $selectedSesi['nama'] }}
+                                                </p>
+                                                <p class="text-green-700">
+                                                    <span class="font-semibold">Jam:</span> {{ $selectedSesi['jam'] }}
+                                                </p>
+                                                <p class="text-green-700">
+                                                    <span class="font-semibold">Sisa Kuota:</span> 
+                                                    <span class="font-bold text-lg">{{ $selectedSesi['sisa_kuota'] }}</span> orang
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endif
                                 @endif
                             @endif
                         </div>

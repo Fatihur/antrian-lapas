@@ -49,15 +49,16 @@ class GenerateSchedules extends Command
 
         if ($start->isAfter($end)) {
             $this->error('Tanggal mulai harus sebelum tanggal selesai!');
+
             return 1;
         }
 
         $this->info("Generate jadwal dari {$start->format('d M Y')} sampai {$end->format('d M Y')}");
-        
+
         if ($weekdaysOnly) {
             $this->info('Mode: Hanya hari kerja (Senin-Jumat)');
         }
-        
+
         if ($excludeHolidays) {
             $this->info('Mode: Melewati tanggal merah');
         }
@@ -76,12 +77,14 @@ class GenerateSchedules extends Command
             // Skip weekend jika weekdays-only
             if ($weekdaysOnly && ($date->isSaturday() || $date->isSunday())) {
                 $skippedCount++;
+
                 continue;
             }
 
             // Skip holidays jika exclude-holidays
             if ($excludeHolidays && in_array($date->format('Y-m-d'), $this->holidays)) {
                 $skippedCount++;
+
                 continue;
             }
 
@@ -93,10 +96,11 @@ class GenerateSchedules extends Command
 
                 if ($exists) {
                     $skippedCount++;
+
                     continue;
                 }
 
-                if (!$dryRun) {
+                if (! $dryRun) {
                     $jamMulai = $sesi === 'PAGI' ? '08:00' : '13:00';
                     $jamSelesai = $sesi === 'PAGI' ? '12:00' : '16:00';
 

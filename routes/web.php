@@ -9,6 +9,8 @@ use App\Livewire\Admin\ManajemenAntrian;
 use App\Livewire\Admin\PanggilAntrian;
 use App\Livewire\Public\AmbilAntrian;
 use App\Livewire\Public\CekStatusAntrian;
+use App\Models\VisitQueue;
+use App\Services\PdfTicketService;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -16,21 +18,21 @@ Route::get('/', function () {
     // Get today's active queue number
     $today = now()->format('Y-m-d');
     $currentSession = now()->format('H') < 12 ? 'PAGI' : 'SIANG';
-    
+
     // Get latest queue number for today
-    $latestQueue = \App\Models\VisitQueue::whereHas('schedule', function($q) use ($today, $currentSession) {
+    $latestQueue = VisitQueue::whereHas('schedule', function ($q) use ($today, $currentSession) {
         $q->where('tanggal', $today)
-          ->where('sesi', $currentSession);
+            ->where('sesi', $currentSession);
     })->latest()->first();
-    
+
     $currentQueueNumber = $latestQueue ? explode('-', $latestQueue->nomor_antrian)[0] : '-';
-    
+
     // Service hours
     $serviceHours = [
         'pagi' => ['08:00', '12:00'],
-        'siang' => ['13:00', '16:00']
+        'siang' => ['13:00', '16:00'],
     ];
-    
+
     return view('public.home', compact('currentQueueNumber', 'serviceHours', 'currentSession'));
 })->name('home');
 
@@ -56,7 +58,8 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
 
 // PDF Download Routes
 Route::get('/download-pdf/{queue}', function ($queueId) {
-    $queue = \App\Models\VisitQueue::findOrFail($queueId);
-    $pdfService = app(\App\Services\PdfTicketService::class);
+    $queue = VisitQueue::findOrFail($queueId);
+    $pdfService = app(PdfTicketService::class);
+
     return $pdfService->download($queue);
 })->name('download-pdf');

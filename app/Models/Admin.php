@@ -88,7 +88,7 @@ class Admin extends Model implements Authenticatable
     /**
      * Set the token value for the "remember me" session.
      *
-     * @param string $value
+     * @param  string  $value
      * @return void
      */
     public function setRememberToken($value)
@@ -108,7 +108,7 @@ class Admin extends Model implements Authenticatable
 
     public function setPasswordAttribute($value)
     {
-        if (!empty($value) && !Hash::isHashed($value)) {
+        if (! empty($value) && ! Hash::isHashed($value)) {
             $this->attributes['password'] = Hash::make($value);
         } else {
             $this->attributes['password'] = $value;

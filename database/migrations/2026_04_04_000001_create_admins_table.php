@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
-            
+
             $table->index('username');
             $table->index('role');
             $table->index('is_active');

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('status_panggilan', ['Dipanggil', 'Selesai', 'Dilewati'])->default('Dipanggil');
             $table->unsignedTinyInteger('recall_count')->default(0);
             $table->timestamps();
-            
+
             $table->index('visit_queue_id');
             $table->index('called_by');
             $table->index('waktu_panggilan');

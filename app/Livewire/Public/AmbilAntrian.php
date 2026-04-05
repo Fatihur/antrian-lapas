@@ -2,40 +2,61 @@
 
 namespace App\Livewire\Public;
 
-use App\Models\VisitSchedule;
-use App\Models\VisitQueue;
+use App\Models\OperasionalSetting;
 use App\Models\VisitFollower;
-use App\Services\QueueNumberGenerator;
+use App\Models\VisitQueue;
+use App\Models\VisitSession;
 use App\Services\PdfTicketService;
+use App\Services\QueueNumberGenerator;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\DB;
 
 class AmbilAntrian extends Component
 {
     use WithFileUploads;
 
     public $currentStep = 1;
+
     public $totalSteps = 4;
+
     public $nik_pendaftar = '';
+
     public $jenis_identitas = 'KTP';
+
     public $nama_pengunjung = '';
+
     public $no_hp = '';
+
     public $hubungan_wbp = '';
+
     public $nama_wbp = '';
+
     public $foto_identitas = null;
+
     public $catatan = '';
+
     public $followers = [];
+
     public $tanggal_kunjungan = '';
+
     public $sesi_kunjungan = '';
+
     public $availableSchedules = [];
+
+    public $availableSessions = [];
+
     public $selectedSchedule = null;
+
     public $submitted = false;
+
     public $queueData = null;
 
     public function mount()
     {
         $this->loadAvailableSchedules();
+        $this->loadAvailableSessions();
         if (empty($this->followers)) {
             $this->followers = [];
         }
@@ -43,7 +64,7 @@ class AmbilAntrian extends Component
 
     protected function getRulesForStep($step)
     {
-        return match($step) {
+        return match ($step) {
             1 => [
                 'nik_pendaftar' => 'required|string|min:10|max:25',
                 'jenis_identitas' => 'required|in:KTP,SIM,Paspor,KK,Lainnya',
@@ -62,7 +83,7 @@ class AmbilAntrian extends Component
             ],
             3 => [
                 'tanggal_kunjungan' => 'required|date|after_or_equal:today',
-                'sesi_kunjungan' => 'required|in:PAGI,SIANG',
+                'sesi_kunjungan' => 'required|exists:visit_sessions,kode_sesi',
             ],
             default => [],
         };
@@ -81,34 +102,83 @@ class AmbilAntrian extends Component
             'foto_identitas.required' => 'Foto identitas wajib diunggah',
             'tanggal_kunjungan.required' => 'Tanggal kunjungan wajib dipilih',
             'sesi_kunjungan.required' => 'Sesi kunjungan wajib dipilih',
+            'sesi_kunjungan.exists' => 'Sesi yang dipilih tidak valid',
         ];
     }
 
     public function loadAvailableSchedules()
     {
-        // Load schedules and convert to array to avoid Livewire serialization issues
-        $schedules = VisitSchedule::open()
-            ->whereDate('tanggal', '>=', now())
-            ->whereDate('tanggal', '<=', now()->addDays(30))
-            ->orderBy('tanggal')
-            ->orderBy('sesi')
-            ->get();
-        
-        // Convert to array for Livewire compatibility
-        $this->availableSchedules = $schedules->map(function($schedule) {
-            return [
-                'id' => $schedule->id,
-                'tanggal' => $schedule->tanggal->format('Y-m-d'),
-                'tanggal_formatted' => $schedule->tanggal->format('d M Y'),
-                'sesi' => $schedule->sesi,
-                'kuota_maksimal' => $schedule->kuota_maksimal,
-                'kuota_terpakai' => $schedule->kuota_terpakai,
-                'sisa_kuota' => $schedule->sisa_kuota,
-                'status_jadwal' => $schedule->status_jadwal,
-                'jam_mulai' => $schedule->jam_mulai,
-                'jam_selesai' => $schedule->jam_selesai,
-            ];
-        })->groupBy('tanggal')->toArray();
+        $settings = OperasionalSetting::getSettings();
+
+        if (! $settings || $settings->status_default === 'tutup') {
+            $this->availableSchedules = [];
+
+            return;
+        }
+
+        // Generate available dates for the next 30 days
+        $availableDates = [];
+        $startDate = now();
+        $endDate = now()->addDays(30);
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            // Check if date is a holiday
+            if ($settings->isHariLibur($date)) {
+                continue;
+            }
+
+            // Get available sessions for this date
+            $activeSessions = VisitSession::getActiveSessions();
+            $availableSesi = [];
+            $totalSisaKuota = 0;
+
+            foreach ($activeSessions as $session) {
+                // Check quota for this session on this date
+                $usedQuota = VisitQueue::whereDate('tanggal_kunjungan', $date->format('Y-m-d'))
+                    ->where('visit_session_id', $session->id)
+                    ->whereIn('status_antrian', ['Disetujui', 'Menunggu'])
+                    ->count();
+
+                $sisaKuota = max(0, $session->kuota_sesi - $usedQuota);
+
+                if ($sisaKuota > 0) {
+                    $availableSesi[] = [
+                        'id' => $session->id,
+                        'kode' => $session->kode_sesi,
+                        'nama' => $session->nama_sesi,
+                        'jam' => $session->getInfoOperasional(),
+                        'sisa_kuota' => $sisaKuota,
+                        'kuota_maksimal' => $session->kuota_sesi,
+                    ];
+                    $totalSisaKuota += $sisaKuota;
+                }
+            }
+
+            if (count($availableSesi) > 0) {
+                $availableDates[$date->format('Y-m-d')] = [
+                    'tanggal' => $date->format('Y-m-d'),
+                    'tanggal_formatted' => $date->format('d M Y'),
+                    'hari' => $date->locale('id')->dayName,
+                    'sesi' => $availableSesi,
+                    'total_sisa_kuota' => $totalSisaKuota,
+                ];
+            }
+        }
+
+        $this->availableSchedules = $availableDates;
+    }
+
+    public function loadAvailableSessions()
+    {
+        $this->availableSessions = VisitSession::getActiveSessions()
+            ->map(fn ($session) => [
+                'id' => $session->id,
+                'kode_sesi' => $session->kode_sesi,
+                'nama_sesi' => $session->nama_sesi,
+                'jam_operasional' => $session->getInfoOperasional(),
+                'kuota_sesi' => $session->kuota_sesi,
+            ])
+            ->toArray();
     }
 
     public function addFollower()
@@ -151,13 +221,35 @@ class AmbilAntrian extends Component
 
         try {
             $queueData = DB::transaction(function () {
-                $schedule = VisitSchedule::open()
-                    ->where('tanggal', $this->tanggal_kunjungan)
-                    ->where('sesi', $this->sesi_kunjungan)
+                $settings = OperasionalSetting::getSettings();
+
+                if (! $settings) {
+                    throw new \Exception('Pengaturan operasional tidak ditemukan');
+                }
+
+                // Check if date is a holiday
+                $selectedDate = Carbon::parse($this->tanggal_kunjungan);
+                if ($settings->isHariLibur($selectedDate)) {
+                    throw new \Exception('Tanggal yang dipilih adalah hari libur');
+                }
+
+                // Get session
+                $session = VisitSession::where('kode_sesi', $this->sesi_kunjungan)
+                    ->where('is_active', true)
                     ->first();
-                
-                if (!$schedule || !$schedule->isKuotaAvailable()) {
-                    throw new \Exception('Kuota untuk jadwal ini sudah penuh atau jadwal tutup');
+
+                if (! $session) {
+                    throw new \Exception('Sesi yang dipilih tidak tersedia');
+                }
+
+                // Check quota availability for this session on this date
+                $usedQuota = VisitQueue::whereDate('tanggal_kunjungan', $this->tanggal_kunjungan)
+                    ->where('visit_session_id', $session->id)
+                    ->whereIn('status_antrian', ['Disetujui', 'Menunggu'])
+                    ->count();
+
+                if ($usedQuota >= $session->kuota_sesi) {
+                    throw new \Exception('Kuota untuk sesi ini sudah penuh');
                 }
 
                 $generator = app(QueueNumberGenerator::class);
@@ -169,7 +261,7 @@ class AmbilAntrian extends Component
                 $kodeBooking = $generator->generateBookingCode();
 
                 $queue = VisitQueue::create([
-                    'visit_schedule_id' => $schedule->id,
+                    'visit_session_id' => $session->id,
                     'kode_booking' => $kodeBooking,
                     'nomor_antrian' => $nomorAntrian,
                     'nik_pendaftar' => $this->nik_pendaftar,
@@ -182,10 +274,11 @@ class AmbilAntrian extends Component
                     'catatan' => $this->catatan,
                     'status_antrian' => 'Disetujui',
                     'waktu_daftar' => now(),
+                    'tanggal_kunjungan' => $this->tanggal_kunjungan,
                 ]);
 
                 foreach ($this->followers as $followerData) {
-                    if (!empty($followerData['nama_pengikut'])) {
+                    if (! empty($followerData['nama_pengikut'])) {
                         VisitFollower::create([
                             'visit_queue_id' => $queue->id,
                             'nama_pengikut' => $followerData['nama_pengikut'],
@@ -195,12 +288,10 @@ class AmbilAntrian extends Component
                     }
                 }
 
-                $schedule->incrementKuotaTerpakai();
-
                 $pdfPath = $pdfService->generate($queue);
                 $queue->update(['pdf_path' => $pdfPath]);
 
-                return $queue->load(['schedule', 'followers']);
+                return $queue->load(['session', 'followers']);
             });
 
             $this->queueData = $queueData;
@@ -208,7 +299,7 @@ class AmbilAntrian extends Component
             $this->dispatch('queue-created', ['queueId' => $queueData->id]);
 
         } catch (\Exception $e) {
-            $this->addError('submit', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->addError('submit', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 

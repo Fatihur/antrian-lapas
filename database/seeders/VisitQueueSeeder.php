@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
-use App\Models\VisitSchedule;
-use App\Models\VisitQueue;
-use App\Models\VisitFollower;
 use App\Models\QueueCall;
-use Illuminate\Database\Seeder;
+use App\Models\VisitFollower;
+use App\Models\VisitQueue;
+use App\Models\VisitSchedule;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class VisitQueueSeeder extends Seeder
 {
@@ -31,10 +31,10 @@ class VisitQueueSeeder extends Seeder
         $this->command->info('✓ Data antrian berhasil dibuat!');
         $this->command->info('');
         $this->command->info('Ringkasan Data:');
-        $this->command->info('- Jadwal: ' . VisitSchedule::count() . ' jadwal');
-        $this->command->info('- Antrian: ' . VisitQueue::count() . ' antrian');
-        $this->command->info('- Pengikut: ' . VisitFollower::count() . ' pengikut');
-        $this->command->info('- Panggilan: ' . QueueCall::count() . ' panggilan');
+        $this->command->info('- Jadwal: '.VisitSchedule::count().' jadwal');
+        $this->command->info('- Antrian: '.VisitQueue::count().' antrian');
+        $this->command->info('- Pengikut: '.VisitFollower::count().' pengikut');
+        $this->command->info('- Panggilan: '.QueueCall::count().' panggilan');
         $this->command->info('');
         $this->command->info('Status antrian:');
         $this->printStatusSummary();
@@ -43,11 +43,11 @@ class VisitQueueSeeder extends Seeder
     private function createSchedules(): void
     {
         $today = Carbon::today();
-        
+
         // Create schedules for 7 days
         for ($i = 0; $i < 7; $i++) {
             $date = $today->copy()->addDays($i);
-            
+
             // Skip weekends
             if ($date->isWeekend()) {
                 continue;
@@ -86,7 +86,7 @@ class VisitQueueSeeder extends Seeder
 
         // Create one closed schedule if doesn't exist
         $closedDate = $today->copy()->addDays(3);
-        if (!$closedDate->isWeekend()) {
+        if (! $closedDate->isWeekend()) {
             VisitSchedule::firstOrCreate(
                 [
                     'tanggal' => $closedDate,
@@ -106,7 +106,7 @@ class VisitQueueSeeder extends Seeder
     private function createQueuesForToday(?Admin $admin): void
     {
         $today = Carbon::today();
-        
+
         $schedules = VisitSchedule::whereDate('tanggal', $today)
             ->where('status_jadwal', 'buka')
             ->get();
@@ -115,6 +115,7 @@ class VisitQueueSeeder extends Seeder
             $existingCount = VisitQueue::where('visit_schedule_id', $schedule->id)->count();
             if ($existingCount > 0) {
                 $this->command->info("  - Jadwal {$schedule->tanggal->format('d/m/Y')} {$schedule->sesi} sudah punya {$existingCount} antrian, skip...");
+
                 continue;
             }
             $this->createQueuesForSchedule($schedule, $admin, 15);
@@ -124,7 +125,7 @@ class VisitQueueSeeder extends Seeder
     private function createQueuesForTomorrow(?Admin $admin): void
     {
         $tomorrow = Carbon::tomorrow();
-        
+
         $schedules = VisitSchedule::whereDate('tanggal', $tomorrow)
             ->where('status_jadwal', 'buka')
             ->get();
@@ -133,6 +134,7 @@ class VisitQueueSeeder extends Seeder
             $existingCount = VisitQueue::where('visit_schedule_id', $schedule->id)->count();
             if ($existingCount > 0) {
                 $this->command->info("  - Jadwal {$schedule->tanggal->format('d/m/Y')} {$schedule->sesi} sudah punya {$existingCount} antrian, skip...");
+
                 continue;
             }
             $this->createQueuesForSchedule($schedule, $admin, 10);
@@ -142,10 +144,10 @@ class VisitQueueSeeder extends Seeder
     private function createQueuesForSchedule($schedule, ?Admin $admin, int $count): void
     {
         $this->command->info("  - Membuat {$count} antrian untuk {$schedule->tanggal->format('d/m/Y')} {$schedule->sesi}...");
-        
+
         $usedNumbers = [];
         $prefixes = ['A', 'B', 'C', 'D', 'E'];
-        
+
         for ($i = 0; $i < $count; $i++) {
             // Generate unique queue number
             do {
@@ -153,7 +155,7 @@ class VisitQueueSeeder extends Seeder
                 $number = str_pad($i + 1, 3, '0', STR_PAD_LEFT);
                 $nomorAntrian = "{$prefix}{$number}";
             } while (in_array($nomorAntrian, $usedNumbers));
-            
+
             $usedNumbers[] = $nomorAntrian;
             $tanggalFormatted = $schedule->tanggal->format('dmY');
             $fullQueueNumber = "{$nomorAntrian}-{$schedule->sesi}-{$tanggalFormatted}";
@@ -165,7 +167,7 @@ class VisitQueueSeeder extends Seeder
 
             // Create queue with varying status
             $status = $this->getRandomStatus($i, $count);
-            
+
             $queueData = [
                 'visit_schedule_id' => $schedule->id,
                 'kode_booking' => strtoupper(uniqid()),
@@ -214,11 +216,11 @@ class VisitQueueSeeder extends Seeder
             ->where('status_jadwal', 'buka')
             ->first();
 
-        if (!$schedule) {
+        if (! $schedule) {
             return;
         }
 
-        $this->command->info("  - Membuat contoh antrian dengan berbagai status...");
+        $this->command->info('  - Membuat contoh antrian dengan berbagai status...');
 
         // Create specific status examples
         $statuses = [
@@ -236,7 +238,7 @@ class VisitQueueSeeder extends Seeder
         foreach ($statuses as $status => $count) {
             for ($i = 0; $i < $count; $i++) {
                 $tanggalFormatted = $schedule->tanggal->format('dmY');
-                $nomorAntrian = "Z" . str_pad($counter++, 3, '0', STR_PAD_LEFT);
+                $nomorAntrian = 'Z'.str_pad($counter++, 3, '0', STR_PAD_LEFT);
                 $fullQueueNumber = "{$nomorAntrian}-{$schedule->sesi}-{$tanggalFormatted}";
 
                 // Use firstOrCreate to avoid duplicates
@@ -287,7 +289,7 @@ class VisitQueueSeeder extends Seeder
     {
         $counters = ['LOKET 1', 'LOKET 2', 'LOKET 3', 'LOKET 4'];
         $counter = $counters[array_rand($counters)];
-        
+
         QueueCall::firstOrCreate(
             [
                 'visit_queue_id' => $queue->id,
@@ -348,7 +350,7 @@ class VisitQueueSeeder extends Seeder
         $bln = str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT);
         $thn = str_pad(rand(50, 99), 2, '0', STR_PAD_LEFT);
         $uniq = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
-        
+
         return "{$provinsi}{$kota}{$kecamatan}{$tgl}{$bln}{$thn}{$uniq}";
     }
 
@@ -357,7 +359,7 @@ class VisitQueueSeeder extends Seeder
         $prefixes = ['0812', '0813', '0856', '0857', '0896', '0895', '0878', '0838'];
         $prefix = $prefixes[array_rand($prefixes)];
         $number = str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
-        
+
         return "{$prefix}{$number}";
     }
 

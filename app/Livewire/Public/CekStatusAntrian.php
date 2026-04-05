@@ -3,13 +3,17 @@
 namespace App\Livewire\Public;
 
 use App\Models\VisitQueue;
+use App\Services\PdfTicketService;
 use Livewire\Component;
 
 class CekStatusAntrian extends Component
 {
     public $nik_pendaftar = '';
+
     public $queues = [];
+
     public $searched = false;
+
     public $selectedQueue = null;
 
     public function search()
@@ -43,13 +47,14 @@ class CekStatusAntrian extends Component
     public function downloadPdf($queueId)
     {
         $queue = VisitQueue::with(['schedule', 'followers'])->findOrFail($queueId);
-        $pdfService = app(\App\Services\PdfTicketService::class);
+        $pdfService = app(PdfTicketService::class);
+
         return $pdfService->download($queue);
     }
 
     public function getStatusColor($status)
     {
-        return match($status) {
+        return match ($status) {
             'Disetujui' => 'green',
             'Menunggu Dipanggil' => 'blue',
             'Dipanggil' => 'indigo',

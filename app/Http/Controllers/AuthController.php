@@ -16,7 +16,7 @@ class AuthController extends Controller
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
-        
+
         return view('admin.auth.login');
     }
 
@@ -31,8 +31,8 @@ class AuthController extends Controller
             'password.min' => 'Password minimal 6 karakter',
         ]);
 
-        $key = 'login.' . $request->ip();
-        
+        $key = 'login.'.$request->ip();
+
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             throw ValidationException::withMessages([
@@ -41,12 +41,12 @@ class AuthController extends Controller
         }
 
         $admin = Admin::where('username', $request->username)
-                      ->where('is_active', true)
-                      ->first();
+            ->where('is_active', true)
+            ->first();
 
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
+        if (! $admin || ! Hash::check($request->password, $admin->password)) {
             RateLimiter::hit($key);
-            
+
             throw ValidationException::withMessages([
                 'username' => 'Username atau password salah',
             ]);
@@ -55,23 +55,23 @@ class AuthController extends Controller
         RateLimiter::clear($key);
 
         Auth::guard('admin')->login($admin, $request->boolean('remember'));
-        
+
         $request->session()->regenerate();
-        
+
         $admin->updateLastLogin();
 
         return redirect()->intended(route('admin.dashboard'))
-                        ->with('success', 'Selamat datang, ' . $admin->nama);
+            ->with('success', 'Selamat datang, '.$admin->nama);
     }
 
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect()->route('admin.login')
-                        ->with('success', 'Anda telah berhasil logout');
+            ->with('success', 'Anda telah berhasil logout');
     }
 }

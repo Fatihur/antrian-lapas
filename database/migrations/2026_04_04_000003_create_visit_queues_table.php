@@ -28,7 +28,7 @@ return new class extends Migration
                 'Menunggu Dipanggil',
                 'Dipanggil',
                 'Selesai',
-                'Kedaluwarsa'
+                'Kedaluwarsa',
             ])->default('Menunggu Verifikasi');
             $table->string('pdf_path', 255)->nullable();
             $table->text('alasan_penolakan')->nullable();
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->foreignId('verified_by')->nullable()->constrained('admins')->onDelete('set null');
             $table->timestamp('waktu_selesai')->nullable();
             $table->timestamps();
-            
+
             $table->index('kode_booking');
             $table->index('nomor_antrian');
             $table->index('nik_pendaftar');

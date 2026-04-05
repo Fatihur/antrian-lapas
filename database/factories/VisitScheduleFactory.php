@@ -13,7 +13,7 @@ class VisitScheduleFactory extends Factory
     {
         $tanggal = $this->faker->dateTimeBetween('+1 day', '+30 days');
         $sesi = $this->faker->randomElement(['PAGI', 'SIANG']);
-        
+
         return [
             'tanggal' => $tanggal,
             'sesi' => $sesi,

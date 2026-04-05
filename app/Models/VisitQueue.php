@@ -13,6 +13,8 @@ class VisitQueue extends Model
 
     protected $fillable = [
         'visit_schedule_id',
+        'visit_session_id',
+        'tanggal_kunjungan',
         'kode_booking',
         'nomor_antrian',
         'nik_pendaftar',
@@ -33,6 +35,7 @@ class VisitQueue extends Model
     ];
 
     protected $casts = [
+        'tanggal_kunjungan' => 'date',
         'waktu_daftar' => 'datetime',
         'waktu_verifikasi' => 'datetime',
         'waktu_selesai' => 'datetime',
@@ -43,6 +46,11 @@ class VisitQueue extends Model
     public function schedule()
     {
         return $this->belongsTo(VisitSchedule::class, 'visit_schedule_id');
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(VisitSession::class, 'visit_session_id');
     }
 
     public function followers()
@@ -75,14 +83,25 @@ class VisitQueue extends Model
         return $this->total_pengikut + 1;
     }
 
-    public function getTanggalKunjunganAttribute()
+    public function getTanggalKunjunganDisplayAttribute()
     {
-        return $this->schedule?->tanggal;
+        return $this->tanggal_kunjungan?->format('d F Y') ?? $this->schedule?->tanggal?->format('d F Y');
     }
 
     public function getSesiKunjunganAttribute()
     {
-        return $this->schedule?->sesi;
+        return $this->schedule?->sesi ?? '-';
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->whereDate('tanggal_kunjungan', today())
+            ->orWhere(function ($q) {
+                $q->whereNull('tanggal_kunjungan')
+                    ->whereHas('schedule', function ($sq) {
+                        $sq->whereDate('tanggal', today());
+                    });
+            });
     }
 
     public function isStatus($status): bool
@@ -105,20 +124,13 @@ class VisitQueue extends Model
         return $query->whereIn('status_antrian', [
             'Disetujui',
             'Menunggu Dipanggil',
-            'Dipanggil'
+            'Dipanggil',
         ]);
     }
 
     public function scopeByStatus($query, $status)
     {
         return $query->where('status_antrian', $status);
-    }
-
-    public function scopeToday($query)
-    {
-        return $query->whereHas('schedule', function ($q) {
-            $q->whereDate('tanggal', today());
-        });
     }
 
     public function scopeByNik($query, $nik)

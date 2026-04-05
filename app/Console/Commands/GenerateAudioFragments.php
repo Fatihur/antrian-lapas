@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\AudioFragmentService;
+use Illuminate\Console\Command;
 
 class GenerateAudioFragments extends Command
 {
     protected $signature = 'audio:generate-fragments';
+
     protected $description = 'Generate audio fragments untuk panggilan antrian';
 
     public function handle(AudioFragmentService $service): int
@@ -16,7 +17,7 @@ class GenerateAudioFragments extends Command
         $this->info('');
 
         // Check Google Cloud credentials
-        if (!env('GOOGLE_APPLICATION_CREDENTIALS')) {
+        if (! env('GOOGLE_APPLICATION_CREDENTIALS')) {
             $this->error('❌ GOOGLE_APPLICATION_CREDENTIALS tidak diatur di .env');
             $this->info('');
             $this->info('Cara setup:');
@@ -26,25 +27,27 @@ class GenerateAudioFragments extends Command
             $this->info('4. Tambahkan ke .env:');
             $this->info('   GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json');
             $this->info('');
+
             return 1;
         }
 
         // Check existing fragments
         $check = $service->checkFragments();
-        
+
         if ($check['complete']) {
-            $this->info('✅ Semua audio fragment sudah tersedia (' . $check['existing'] . ' files)');
+            $this->info('✅ Semua audio fragment sudah tersedia ('.$check['existing'].' files)');
             $this->info('');
             $this->info('List file:');
             foreach ($check['missing_files'] as $file) {
                 $this->info("  - {$file}.mp3");
             }
+
             return 0;
         }
 
-        $this->info('📁 Total fragment yang dibutuhkan: ' . $check['total_required']);
-        $this->info('✅ Sudah ada: ' . $check['existing']);
-        $this->info('📝 Perlu dibuat: ' . $check['missing']);
+        $this->info('📁 Total fragment yang dibutuhkan: '.$check['total_required']);
+        $this->info('✅ Sudah ada: '.$check['existing']);
+        $this->info('📝 Perlu dibuat: '.$check['missing']);
         $this->info('');
 
         if ($check['missing'] > 0) {
@@ -97,9 +100,11 @@ class GenerateAudioFragments extends Command
             $this->info('1. Jalankan: php artisan storage:link');
             $this->info('2. Buka halaman Panggil Antrian');
             $this->info('3. Klik "Panggil" - audio akan diputar otomatis');
+
             return 0;
         } else {
             $this->error('⚠️  Ada error saat membuat audio fragments');
+
             return 1;
         }
     }

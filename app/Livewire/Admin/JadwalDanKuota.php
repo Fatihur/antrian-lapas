@@ -2,362 +2,316 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\VisitSchedule;
+use App\Models\OperasionalSetting;
+use App\Models\VisitSession;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class JadwalDanKuota extends Component
 {
-    use WithPagination;
-    
-    public $showModal = false;
-    public $showBulkModal = false;
-    public $editMode = false;
-    public $scheduleId = null;
-    
-    // View mode: 'calendar' | 'list'
-    public $viewMode = 'calendar';
-    
-    // Calendar properties
-    public $currentMonth;
-    public $currentYear;
-    public $selectedDate = null;
-    
-    // Single schedule properties
-    public $tanggal;
-    public $sesi = 'PAGI';
-    public $kuota_maksimal = 50;
-    public $status_jadwal = 'buka';
-    public $jam_mulai;
-    public $jam_selesai;
-    public $keterangan;
-    
-    // Bulk schedule properties
-    public $bulk_tanggal_mulai;
-    public $bulk_tanggal_selesai;
-    public $bulk_kuota_maksimal = 50;
-    public $bulk_hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-    public $bulk_skip_holidays = true;
-    public $bulk_default_status = 'buka';
-    public $bulkPreview = [];
-    public $showPreview = false;
-    
-    protected $rules = [
-        'tanggal' => 'required|date|after_or_equal:today',
-        'sesi' => 'required|in:PAGI,SIANG',
-        'kuota_maksimal' => 'required|integer|min:1|max:500',
-        'status_jadwal' => 'required|in:buka,tutup',
-        'jam_mulai' => 'nullable|date_format:H:i',
-        'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
-        'keterangan' => 'nullable|string|max:500',
+    // Tab management
+    public string $activeTab = 'kelola-sesi';
+
+    // Properties for Visit Sessions CRUD
+    public array $sessions = [];
+
+    public bool $showSessionModal = false;
+
+    public bool $editSessionMode = false;
+
+    public ?int $editingSessionId = null;
+
+    // Session form properties
+    public string $sesi_nama = '';
+
+    public string $sesi_kode = '';
+
+    public string $sesi_jam_buka = '08:00';
+
+    public string $sesi_jam_tutup = '12:00';
+
+    public int $sesi_kuota = 50;
+
+    public int $sesi_urutan = 1;
+
+    public string $sesi_keterangan = '';
+
+    // Hari Libur properties
+    public array $hari_libur_mingguan = [];
+
+    public string $tanggal_libur_baru = '';
+
+    public string $keterangan_libur = '';
+
+    public array $tanggal_libur_khusus = [];
+
+    public string $status_default = 'buka';
+
+    // Show modals
+    public bool $showAddHolidayModal = false;
+
+    protected array $sessionRules = [
+        'sesi_nama' => 'required|string|max:50',
+        'sesi_kode' => 'required|string|max:20|unique:visit_sessions,kode_sesi',
+        'sesi_jam_buka' => 'required|date_format:H:i',
+        'sesi_jam_tutup' => 'required|date_format:H:i|after:sesi_jam_buka',
+        'sesi_kuota' => 'required|integer|min:1|max:500',
+        'sesi_urutan' => 'required|integer|min:1',
+        'sesi_keterangan' => 'nullable|string|max:255',
     ];
-    
-    protected $bulkRules = [
-        'bulk_tanggal_mulai' => 'required|date|after_or_equal:today',
-        'bulk_tanggal_selesai' => 'required|date|after_or_equal:bulk_tanggal_mulai',
-        'bulk_kuota_maksimal' => 'required|integer|min:1|max:500',
-        'bulk_hari' => 'required|array|min:1',
-        'bulk_hari.*' => 'in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-        'bulk_skip_holidays' => 'boolean',
-        'bulk_default_status' => 'required|in:buka,tutup',
+
+    protected array $holidayRules = [
+        'tanggal_libur_baru' => 'required|date',
+        'keterangan_libur' => 'nullable|string|max:255',
     ];
-    
-    public function openCreateModal()
+
+    public function mount(): void
     {
-        $this->resetForm();
-        $this->showModal = true;
-        $this->editMode = false;
+        $this->loadSettings();
+        $this->loadSessions();
     }
-    
-    public function openBulkModal()
+
+    public function loadSettings(): void
     {
-        $this->resetBulkForm();
-        $this->showBulkModal = true;
-        $this->showPreview = false;
+        $settings = OperasionalSetting::first();
+
+        if ($settings) {
+            $this->hari_libur_mingguan = $settings->hari_libur_mingguan ?? [];
+            $this->tanggal_libur_khusus = $settings->tanggal_libur_khusus ?? [];
+            $this->status_default = $settings->status_default ?? 'buka';
+        } else {
+            $this->hari_libur_mingguan = ['Minggu'];
+            $this->tanggal_libur_khusus = [];
+        }
     }
-    
-    public function closeModal()
+
+    public function loadSessions(): void
     {
-        $this->showModal = false;
-        $this->resetForm();
+        $this->sessions = VisitSession::orderBy('urutan')
+            ->get()
+            ->map(fn ($session) => [
+                'id' => $session->id,
+                'nama_sesi' => $session->nama_sesi,
+                'kode_sesi' => $session->kode_sesi,
+                'jam_buka' => $session->jam_buka?->format('H:i') ?? '',
+                'jam_tutup' => $session->jam_tutup?->format('H:i') ?? '',
+                'kuota_sesi' => $session->kuota_sesi,
+                'is_active' => $session->is_active,
+                'urutan' => $session->urutan,
+                'keterangan' => $session->keterangan,
+            ])
+            ->toArray();
     }
-    
-    public function closeBulkModal()
+
+    public function setTab(string $tab): void
     {
-        $this->showBulkModal = false;
-        $this->resetBulkForm();
-    }
-    
-    public function resetForm()
-    {
-        $this->scheduleId = null;
-        $this->tanggal = '';
-        $this->sesi = 'PAGI';
-        $this->kuota_maksimal = 50;
-        $this->status_jadwal = 'buka';
-        $this->jam_mulai = '';
-        $this->jam_selesai = '';
-        $this->keterangan = '';
+        $this->activeTab = $tab;
         $this->resetErrorBag();
     }
-    
-    public function resetBulkForm()
+
+    // Session CRUD Methods
+    public function openCreateSessionModal(): void
     {
-        $this->bulk_tanggal_mulai = '';
-        $this->bulk_tanggal_selesai = '';
-        $this->bulk_kuota_maksimal = 50;
-        $this->bulk_hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-        $this->bulk_skip_holidays = true;
-        $this->bulk_default_status = 'buka';
-        $this->bulkPreview = [];
-        $this->showPreview = false;
+        $this->resetSessionForm();
+        $this->showSessionModal = true;
+        $this->editSessionMode = false;
+        $this->editingSessionId = null;
+    }
+
+    public function openEditSessionModal(int $sessionId): void
+    {
+        $session = VisitSession::findOrFail($sessionId);
+
+        $this->sesi_nama = $session->nama_sesi;
+        $this->sesi_kode = $session->kode_sesi;
+        $this->sesi_jam_buka = $session->jam_buka?->format('H:i') ?? '08:00';
+        $this->sesi_jam_tutup = $session->jam_tutup?->format('H:i') ?? '12:00';
+        $this->sesi_kuota = $session->kuota_sesi;
+        $this->sesi_urutan = $session->urutan;
+        $this->sesi_keterangan = $session->keterangan ?? '';
+
+        $this->editingSessionId = $sessionId;
+        $this->showSessionModal = true;
+        $this->editSessionMode = true;
         $this->resetErrorBag();
     }
-    
-    public function generatePreview()
+
+    public function closeSessionModal(): void
     {
-        $this->validate($this->bulkRules);
-        
-        $start = \Carbon\Carbon::parse($this->bulk_tanggal_mulai);
-        $end = \Carbon\Carbon::parse($this->bulk_tanggal_selesai);
-        $hariMap = [
-            'Senin' => 1,
-            'Selasa' => 2,
-            'Rabu' => 3,
-            'Kamis' => 4,
-            'Jumat' => 5,
-            'Sabtu' => 6,
-            'Minggu' => 0,
-        ];
-        $selectedDays = array_map(fn($h) => $hariMap[$h], $this->bulk_hari);
-        
-        $this->bulkPreview = [];
-        
-        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
-            if (!in_array($date->dayOfWeek, $selectedDays)) {
-                continue;
-            }
-            
-            // Check if holiday (simplified check)
-            if ($this->bulk_skip_holidays && $this->isHoliday($date)) {
-                continue;
-            }
-            
-            // Check existing schedules
-            $existing = VisitSchedule::where('tanggal', $date->format('Y-m-d'))
-                ->pluck('sesi')
-                ->toArray();
-            
-            foreach (['PAGI', 'SIANG'] as $sesi) {
-                $this->bulkPreview[] = [
-                    'tanggal' => $date->format('Y-m-d'),
-                    'tanggal_formatted' => $date->format('d M Y'),
-                    'hari' => $date->locale('id')->dayName,
-                    'sesi' => $sesi,
-                    'exists' => in_array($sesi, $existing),
-                    'jam_mulai' => $sesi === 'PAGI' ? '08:00' : '13:00',
-                    'jam_selesai' => $sesi === 'PAGI' ? '12:00' : '16:00',
-                ];
-            }
-        }
-        
-        $this->showPreview = true;
+        $this->showSessionModal = false;
+        $this->resetSessionForm();
     }
-    
-    private function isHoliday($date)
+
+    public function resetSessionForm(): void
     {
-        $holidays = [
-            '2025-01-01', '2025-01-27', '2025-03-29', '2025-04-18',
-            '2025-04-20', '2025-05-01', '2025-05-12', '2025-05-29',
-            '2025-06-01', '2025-06-07', '2025-06-08', '2025-08-17',
-            '2025-09-05', '2025-12-25',
-        ];
-        return in_array($date->format('Y-m-d'), $holidays);
+        $this->sesi_nama = '';
+        $this->sesi_kode = '';
+        $this->sesi_jam_buka = '08:00';
+        $this->sesi_jam_tutup = '12:00';
+        $this->sesi_kuota = 50;
+        $this->sesi_urutan = count($this->sessions) + 1;
+        $this->sesi_keterangan = '';
+        $this->editingSessionId = null;
+        $this->resetErrorBag();
     }
-    
-    public function saveBulk()
+
+    public function saveSession(): void
     {
-        $this->validate($this->bulkRules);
-        
-        if (!$this->showPreview) {
-            $this->generatePreview();
+        $rules = $this->sessionRules;
+
+        // Remove unique constraint for kode_sesi when editing
+        if ($this->editSessionMode) {
+            $rules['sesi_kode'] = 'required|string|max:20';
         }
-        
-        $createdCount = 0;
-        $skippedCount = 0;
-        
-        foreach ($this->bulkPreview as $item) {
-            if ($item['exists']) {
-                $skippedCount++;
-                continue;
-            }
-            
-            VisitSchedule::create([
-                'tanggal' => $item['tanggal'],
-                'sesi' => $item['sesi'],
-                'kuota_maksimal' => $this->bulk_kuota_maksimal,
-                'kuota_terpakai' => 0,
-                'status_jadwal' => $this->bulk_default_status,
-                'jam_mulai' => $item['jam_mulai'],
-                'jam_selesai' => $item['jam_selesai'],
-                'keterangan' => 'Bulk generated',
+
+        $this->validate($rules);
+
+        if ($this->editSessionMode && $this->editingSessionId) {
+            $session = VisitSession::findOrFail($this->editingSessionId);
+            $session->update([
+                'nama_sesi' => $this->sesi_nama,
+                'kode_sesi' => $this->sesi_kode,
+                'jam_buka' => $this->sesi_jam_buka,
+                'jam_tutup' => $this->sesi_jam_tutup,
+                'kuota_sesi' => $this->sesi_kuota,
+                'urutan' => $this->sesi_urutan,
+                'keterangan' => $this->sesi_keterangan,
             ]);
-            
-            $createdCount++;
+            session()->flash('success', 'Sesi berhasil diperbarui');
+        } else {
+            VisitSession::create([
+                'nama_sesi' => $this->sesi_nama,
+                'kode_sesi' => strtoupper($this->sesi_kode),
+                'jam_buka' => $this->sesi_jam_buka,
+                'jam_tutup' => $this->sesi_jam_tutup,
+                'kuota_sesi' => $this->sesi_kuota,
+                'is_active' => true,
+                'urutan' => $this->sesi_urutan,
+                'keterangan' => $this->sesi_keterangan,
+            ]);
+            session()->flash('success', 'Sesi baru berhasil ditambahkan');
         }
-        
-        session()->flash('success', "Berhasil membuat {$createdCount} jadwal, {$skippedCount} dilewati (sudah ada).");
-        $this->closeBulkModal();
+
+        $this->closeSessionModal();
+        $this->loadSessions();
     }
-    
-    public function openEditModal($id)
+
+    public function toggleSessionStatus(int $sessionId): void
     {
-        $schedule = VisitSchedule::findOrFail($id);
-        $this->scheduleId = $id;
-        $this->tanggal = $schedule->tanggal->format('Y-m-d');
-        $this->sesi = $schedule->sesi;
-        $this->kuota_maksimal = $schedule->kuota_maksimal;
-        $this->status_jadwal = $schedule->status_jadwal;
-        $this->jam_mulai = $schedule->jam_mulai ? $schedule->jam_mulai->format('H:i') : null;
-        $this->jam_selesai = $schedule->jam_selesai ? $schedule->jam_selesai->format('H:i') : null;
-        $this->keterangan = $schedule->keterangan;
-        $this->showModal = true;
-        $this->editMode = true;
+        $session = VisitSession::findOrFail($sessionId);
+        $session->update(['is_active' => ! $session->is_active]);
+        $this->loadSessions();
+        session()->flash('success', 'Status sesi diperbarui');
     }
-    
-    public function save()
+
+    public function deleteSession(int $sessionId): void
     {
-        $this->validate();
-        
-        if ($this->editMode) {
-            $schedule = VisitSchedule::findOrFail($this->scheduleId);
-            
-            if ($this->kuota_maksimal < $schedule->kuota_terpakai) {
-                $this->addError('kuota_maksimal', 'Kuota maksimal tidak boleh kurang dari kuota terpakai (' . $schedule->kuota_terpakai . ')');
+        $session = VisitSession::findOrFail($sessionId);
+
+        // Check if session has any queues
+        if ($session->queues()->count() > 0) {
+            session()->flash('error', 'Tidak dapat menghapus sesi yang sudah memiliki antrian');
+
+            return;
+        }
+
+        $session->delete();
+        $this->loadSessions();
+        session()->flash('success', 'Sesi berhasil dihapus');
+    }
+
+    // Holiday Methods
+    public function saveHariLibur(): void
+    {
+        $settings = OperasionalSetting::first() ?? new OperasionalSetting;
+
+        $settings->fill([
+            'status_default' => $this->status_default,
+            'hari_libur_mingguan' => $this->hari_libur_mingguan,
+            'tanggal_libur_khusus' => $this->tanggal_libur_khusus,
+        ]);
+
+        $settings->save();
+
+        session()->flash('success', 'Pengaturan hari libur berhasil disimpan');
+    }
+
+    public function openAddHolidayModal(): void
+    {
+        $this->showAddHolidayModal = true;
+        $this->tanggal_libur_baru = '';
+        $this->keterangan_libur = '';
+        $this->resetErrorBag();
+    }
+
+    public function closeAddHolidayModal(): void
+    {
+        $this->showAddHolidayModal = false;
+        $this->tanggal_libur_baru = '';
+        $this->keterangan_libur = '';
+        $this->resetErrorBag();
+    }
+
+    public function addHoliday(): void
+    {
+        $this->validate($this->holidayRules);
+
+        // Check if date already exists
+        foreach ($this->tanggal_libur_khusus as $holiday) {
+            $existingDate = is_array($holiday) ? $holiday['tanggal'] : $holiday;
+            if ($existingDate === $this->tanggal_libur_baru) {
+                $this->addError('tanggal_libur_baru', 'Tanggal ini sudah ada dalam daftar libur');
+
                 return;
             }
-            
-            $schedule->update([
-                'tanggal' => $this->tanggal,
-                'sesi' => $this->sesi,
-                'kuota_maksimal' => $this->kuota_maksimal,
-                'status_jadwal' => $this->status_jadwal,
-                'jam_mulai' => $this->jam_mulai,
-                'jam_selesai' => $this->jam_selesai,
-                'keterangan' => $this->keterangan,
-            ]);
-            
-            session()->flash('success', 'Jadwal berhasil diperbarui');
-        } else {
-            $exists = VisitSchedule::where('tanggal', $this->tanggal)
-                ->where('sesi', $this->sesi)
-                ->exists();
-                
-            if ($exists) {
-                $this->addError('sesi', 'Jadwal untuk tanggal dan sesi ini sudah ada');
-                return;
-            }
-            
-            VisitSchedule::create([
-                'tanggal' => $this->tanggal,
-                'sesi' => $this->sesi,
-                'kuota_maksimal' => $this->kuota_maksimal,
-                'status_jadwal' => $this->status_jadwal,
-                'jam_mulai' => $this->jam_mulai,
-                'jam_selesai' => $this->jam_selesai,
-                'keterangan' => $this->keterangan,
-            ]);
-            
-            session()->flash('success', 'Jadwal berhasil dibuat');
         }
-        
-        $this->closeModal();
+
+        $this->tanggal_libur_khusus[] = [
+            'tanggal' => $this->tanggal_libur_baru,
+            'keterangan' => $this->keterangan_libur,
+            'created_at' => now()->format('Y-m-d H:i:s'),
+        ];
+
+        // Sort by date
+        usort($this->tanggal_libur_khusus, function ($a, $b) {
+            $dateA = is_array($a) ? $a['tanggal'] : $a;
+            $dateB = is_array($b) ? $b['tanggal'] : $b;
+
+            return strcmp($dateA, $dateB);
+        });
+
+        $this->closeAddHolidayModal();
+        $this->saveHariLibur();
     }
-    
-    public function toggleStatus($id)
+
+    public function removeHoliday(string $tanggal): void
     {
-        $schedule = VisitSchedule::findOrFail($id);
-        $newStatus = $schedule->status_jadwal === 'buka' ? 'tutup' : 'buka';
-        $schedule->update(['status_jadwal' => $newStatus]);
-        session()->flash('success', 'Status jadwal diubah menjadi ' . $newStatus);
+        $this->tanggal_libur_khusus = array_filter($this->tanggal_libur_khusus, function ($holiday) use ($tanggal) {
+            $existingDate = is_array($holiday) ? $holiday['tanggal'] : $holiday;
+
+            return $existingDate !== $tanggal;
+        });
+
+        // Re-index array
+        $this->tanggal_libur_khusus = array_values($this->tanggal_libur_khusus);
+        $this->saveHariLibur();
     }
-    
-    public function mount()
+
+    public function toggleHariLiburMingguan(string $hari): void
     {
-        $this->currentMonth = now()->month;
-        $this->currentYear = now()->year;
-    }
-    
-    public function previousMonth()
-    {
-        if ($this->currentMonth === 1) {
-            $this->currentMonth = 12;
-            $this->currentYear--;
+        if (in_array($hari, $this->hari_libur_mingguan)) {
+            $this->hari_libur_mingguan = array_diff($this->hari_libur_mingguan, [$hari]);
         } else {
-            $this->currentMonth--;
+            $this->hari_libur_mingguan[] = $hari;
         }
+
+        // Re-index array
+        $this->hari_libur_mingguan = array_values($this->hari_libur_mingguan);
     }
-    
-    public function nextMonth()
-    {
-        if ($this->currentMonth === 12) {
-            $this->currentMonth = 1;
-            $this->currentYear++;
-        } else {
-            $this->currentMonth++;
-        }
-    }
-    
-    public function selectDate($date)
-    {
-        $this->selectedDate = $date;
-        $this->tanggal = $date;
-        $this->openCreateModal();
-    }
-    
-    public function toggleViewMode()
-    {
-        $this->viewMode = $this->viewMode === 'calendar' ? 'list' : 'calendar';
-    }
-    
+
     public function render()
     {
-        if ($this->viewMode === 'list') {
-            $schedules = VisitSchedule::orderBy('tanggal', 'desc')
-                ->orderBy('sesi')
-                ->paginate(20);
-                
-            return view('livewire.admin.jadwal-dan-kuota', [
-                'schedules' => $schedules,
-                'calendarData' => null,
-            ])->layout('layouts.admin', ['title' => 'Jadwal & Kuota']);
-        }
-        
-        // Calendar view
-        $startOfMonth = \Carbon\Carbon::createFromDate($this->currentYear, $this->currentMonth, 1);
-        $endOfMonth = $startOfMonth->copy()->endOfMonth();
-        
-        // Get all schedules for current month view
-        $schedules = VisitSchedule::whereBetween('tanggal', [
-            $startOfMonth->copy()->startOfWeek(),
-            $endOfMonth->copy()->endOfWeek()
-        ])->get();
-        
-        // Group by date
-        $calendarData = [];
-        foreach ($schedules as $schedule) {
-            $date = $schedule->tanggal->format('Y-m-d');
-            if (!isset($calendarData[$date])) {
-                $calendarData[$date] = [];
-            }
-            $calendarData[$date][] = $schedule;
-        }
-        
         return view('livewire.admin.jadwal-dan-kuota', [
-            'schedules' => $schedules,
-            'calendarData' => $calendarData,
-            'startOfMonth' => $startOfMonth,
-            'endOfMonth' => $endOfMonth,
-        ])->layout('layouts.admin', ['title' => 'Jadwal & Kuota']);
+            'allHari' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+        ])->layout('layouts.admin', ['title' => 'Atur Jadwal']);
     }
 }

@@ -16,20 +16,20 @@ return new class extends Migration
                 'Menunggu Dipanggil',
                 'Dipanggil',
                 'Selesai',
-                'Kedaluwarsa'
+                'Kedaluwarsa',
             ]);
             $table->enum('status_baru', [
                 'Disetujui',
                 'Menunggu Dipanggil',
                 'Dipanggil',
                 'Selesai',
-                'Kedaluwarsa'
+                'Kedaluwarsa',
             ]);
             $table->text('keterangan')->nullable();
             $table->foreignId('changed_by')->constrained('admins')->onDelete('restrict');
             $table->timestamp('waktu_perubahan')->useCurrent();
             $table->timestamps();
-            
+
             $table->index('visit_queue_id');
             $table->index('changed_by');
             $table->index('waktu_perubahan');

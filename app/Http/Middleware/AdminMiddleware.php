@@ -11,24 +11,24 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::guard('admin')->check()) {
+        if (! Auth::guard('admin')->check()) {
             if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Unauthorized. Silakan login terlebih dahulu.'
+                    'message' => 'Unauthorized. Silakan login terlebih dahulu.',
                 ], 401);
             }
-            
+
             return redirect()->route('admin.login')
-                           ->with('error', 'Silakan login terlebih dahulu');
+                ->with('error', 'Silakan login terlebih dahulu');
         }
 
         $admin = Auth::guard('admin')->user();
-        
-        if (!$admin->is_active) {
+
+        if (! $admin->is_active) {
             Auth::guard('admin')->logout();
-            
+
             return redirect()->route('admin.login')
-                           ->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
+                ->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
         }
 
         return $next($request);
